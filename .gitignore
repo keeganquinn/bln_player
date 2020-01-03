@@ -12,10 +12,10 @@
 /checkstyle-*.xml
 /coverage/
 /coverage-js/
+/dist/
 /doc/
 /jsdoc/
 /junit.xml
-/lib/
 /rspec.xml
 
 # Working files and data

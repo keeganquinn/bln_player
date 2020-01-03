@@ -1,24 +1,22 @@
 {
   "name": "bln_player",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Play music published by basslin.es records",
   "homepage": "https://github.com/keeganquinn/bln_player",
   "bugs": "https://github.com/keeganquinn/bln_player/issues",
   "license": "MIT",
   "author": "Keegan Quinn <keegan@quinn.tk>",
   "repository": "https://github.com/keeganquinn/bln_player.git",
-  "main": "index.js",
+  "main": "dist/main/index.js",
   "scripts": {
     "lint": "eslint src *.js",
     "jsonlint": "jsonlint -q .*.json *.json",
     "pkglint": "npmPkgJsonLint .",
-    "prepublish": "babel src --out-dir lib",
+    "prepare": "webpack",
     "test": "jest --coverage"
   },
   "files": [
-    "index.js",
-    "lib/bln_player.js",
-    "lib/music_control.js"
+    "dist/main/index.js"
   ],
   "keywords": [
     "music",
@@ -41,7 +39,9 @@
     "js-cookie": "^2.2.1",
     "loglevel": "^1.6.6",
     "nouislider": "^14.1.1",
-    "spin.js": "^4.1.0"
+    "spin.js": "^4.1.0",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
