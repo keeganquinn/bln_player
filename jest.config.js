@@ -6,7 +6,7 @@ module.exports = {
     'text',
   ],
   moduleDirectories: [
-    'lib',
+    'src',
     'node_modules',
   ],
   reporters: [
@@ -14,7 +14,7 @@ module.exports = {
     'jest-junit',
   ],
   roots: [
-    'lib',
+    'src',
   ],
   transformIgnorePatterns: [
     'node_modules/?!(spin.js)',

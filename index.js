@@ -1,4 +1,4 @@
-import BlnPlayer from 'lib/bln_player';
-import MusicControl from 'lib/music_control';
+const BlnPlayer = require('./lib/bln_player');
+const MusicControl = require('./lib/music_control');
 
-export { BlnPlayer, MusicControl };
+module.exports = { BlnPlayer, MusicControl };

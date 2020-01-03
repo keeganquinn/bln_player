@@ -15,6 +15,7 @@
 /doc/
 /jsdoc/
 /junit.xml
+/lib/
 /rspec.xml
 
 # Working files and data
