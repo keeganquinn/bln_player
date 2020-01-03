@@ -1,0 +1,32 @@
+# Must always be local
+/.bundle/
+/jest_*/
+/node_modules/
+/public/assets/
+/public/assets-test/
+/storage/
+/tmp/*
+/vendor/
+
+# Build artifacts
+/checkstyle-*.xml
+/coverage/
+/coverage-js/
+/doc/
+/jsdoc/
+/junit.xml
+/rspec.xml
+
+# Working files and data
+/.env*
+/.yardoc/
+/db/live.sql
+/db/live.sql.gz
+/db/*.sqlite3
+/db/*.sqlite3-journal
+/doc/api/
+/doc/app/
+/doc/features.html
+/doc/specs.html
+/log/*
+/yarn-error.log
