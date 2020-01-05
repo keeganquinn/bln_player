@@ -20,16 +20,16 @@ const playerHtml = `
     <ul class="navbar-nav">
       <li class="nav-item">
         <a id="prev" href="#" class="nav-link">
-          <span class="fa fa-fw fa-lg fa-backward"></span></a></li>
+          <span class="fa fa-fw fa-lg fa-backward">Previous</span></a></li>
       <li class="nav-item">
         <a id="pause" href="#" class="nav-link">
-          <span class="fa fa-fw fa-lg fa-play"></span></a></li>
+          <span class="fa fa-fw fa-lg fa-play">Play</span></a></li>
       <li class="nav-item">
         <a id="next" href="#" class="nav-link">
-          <span class="fa fa-fw fa-lg fa-forward"></span></a></li>
+          <span class="fa fa-fw fa-lg fa-forward">Next</span></a></li>
       <li class="nav-item dropup" id="volgrp">
         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
-          <span id="volsel" class="fa fa-lg fa-volume-up"></span></a>
+          <span id="volsel" class="fa fa-lg fa-volume-up">Volume</span></a>
         <div class="dropdown-menu bg-secondary p-1">
           <div id="vol" class="noUi-target noUi-rtl noUi-vertical"></div>
         </div>
@@ -74,7 +74,7 @@ class MusicControl {
   start(dataUrl) {
     this.player = new BlnPlayer({
       onLoad: this.load.bind(this),
-      onPlay: this.step.bind(this),
+      onPlay: this.refresh.bind(this),
       onUpdate: this.refresh.bind(this),
       sourceUrl: dataUrl,
     });
@@ -224,16 +224,18 @@ class MusicControl {
 
     if (this.player.isLoading) {
       if (!this.spinner.el) {
-        this.elPause.innerHTML = '<div style="position: relative;">'
-          + '<span class="fa fa-fw fa-lg"></span></div>';
+        this.elPause.innerHTML = '<span style="position: relative;">'
+          + '<span class="fa fa-fw fa-lg">Loading...</span></span>';
         this.spinner.spin(this.elPause.firstElementChild);
       }
     } else if (this.player.isPlaying) {
       if (this.spinner.el) this.spinner.stop();
-      this.elPause.innerHTML = '<span class="fa fa-fw fa-lg fa-pause"></span>';
+      this.elPause.innerHTML =
+        '<span class="fa fa-fw fa-lg fa-pause">Pause</span>';
     } else {
       if (this.spinner.el) this.spinner.stop();
-      this.elPause.innerHTML = '<span class="fa fa-fw fa-lg fa-play"></span>';
+      this.elPause.innerHTML =
+        '<span class="fa fa-fw fa-lg fa-play">Play</span>';
     }
   }
 
