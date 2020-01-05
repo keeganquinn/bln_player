@@ -195,6 +195,8 @@ class MusicControl {
     }
 
     this.elVol = document.getElementById('vol');
+    this.elVol.parentElement.style.minWidth = '18px';
+    this.elVol.style.height = '10em';
     noUiSlider.create(this.elVol, {
       start: [this.player.vol * 100],
       connect: [true, false],
@@ -229,14 +231,21 @@ class MusicControl {
       }
     });
 
-    this.elPlayArt.innerHTML = `<img src="${release.image}" alt="Cover">`;
+    this.elPlayArt.style.height = '40px';
+    this.elPlayArt.style.width = '40px';
+    this.elPlayArt.style.border = '1px solid #e9ecef';
+    this.elPlayArt.innerHTML = (
+      `<img src="${release.image}" alt="Cover" width="38" height="38"/>`);
+    this.elPlayTrk.style.fontSize = '0.8rem';
+    this.elPlayTrk.style.fontWeight = 'bold';
     this.elPlayTrk.innerHTML = track.title;
+    this.elPlayRel.style.fontSize = '0.8rem';
     this.elPlayRel.innerHTML = `${track.artist} - ${release.title}`;
 
     if (this.player.isLoading) {
       if (!this.spinner.el) {
         this.elPause.innerHTML = '<span style="position: relative;">'
-          + '<span class="fa-fw fa-lg"></span></span>';
+          + '<span class="fa fa-fw fa-lg fa-pause invisible"></span></span>';
         this.spinner.spin(this.elPause.firstElementChild);
       }
     } else if (this.player.isPlaying) {
