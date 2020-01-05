@@ -13,7 +13,12 @@ module.exports = {
     library: 'bln_player',
     libraryTarget: 'umd',
   },
-  plugins: [new HtmlWebpackPlugin({ chunks: ['example'] })],
+  plugins: [
+    new HtmlWebpackPlugin({
+      chunks: ['example'],
+      title: 'bln_player'
+    })
+  ],
   module: {
     rules: [
       {
