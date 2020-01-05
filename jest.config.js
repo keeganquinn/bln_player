@@ -9,6 +9,9 @@ module.exports = {
     'src',
     'node_modules',
   ],
+  moduleNameMapper: {
+    '\\.(css)$': '<rootDir>/src/mocks/styleMock.js',
+  },
   reporters: [
     'default',
     'jest-junit',
