@@ -16,8 +16,8 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       chunks: ['example'],
-      title: 'bln_player'
-    })
+      title: 'bln_player',
+    }),
   ],
   module: {
     rules: [
