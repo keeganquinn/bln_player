@@ -235,8 +235,7 @@ class MusicControl {
 
     if (this.player.isLoading) {
       if (!this.spinner.el) {
-        this.elPause.innerHTML = '<span style="position: relative;">'
-          + '<span class="fa fa-fw fa-lg"></span></span>';
+        this.elPause.innerHTML = '<span style="position: relative;"></span>';
         this.spinner.spin(this.elPause.firstElementChild);
       }
     } else if (this.player.isPlaying) {
