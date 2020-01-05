@@ -14,4 +14,12 @@ module.exports = {
     libraryTarget: 'umd',
   },
   plugins: [new HtmlWebpackPlugin({ chunks: ['example'] })],
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: ['css-loader'],
+      },
+    ],
+  },
 };
