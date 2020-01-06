@@ -234,13 +234,16 @@ class MusicControl {
     this.elPlayArt.style.height = '40px';
     this.elPlayArt.style.width = '40px';
     this.elPlayArt.style.border = '1px solid #e9ecef';
-    this.elPlayArt.innerHTML = (
-      `<img src="${release.image}" alt="Cover" width="38" height="38"/>`);
+    this.elPlayArt.innerHTML = `<a href="${release.url}">`
+      + `<img src="${release.image}" alt="Cover" width="38" height="38"/></a>`;
     this.elPlayTrk.style.fontSize = '0.8rem';
     this.elPlayTrk.style.fontWeight = 'bold';
     this.elPlayTrk.innerHTML = track.title;
     this.elPlayRel.style.fontSize = '0.8rem';
-    this.elPlayRel.innerHTML = `${track.artist} - ${release.title}`;
+    this.elPlayRel.innerHTML = `<a href="${release.url}">`
+      + `${track.artist} - ${release.title}</a>`;
+    this.elPlayRel.firstElementChild.style.textDecoration = 'none';
+    this.elPlayRel.firstElementChild.style.color = 'black';
 
     if (this.player.isLoading) {
       if (!this.spinner.el) {
