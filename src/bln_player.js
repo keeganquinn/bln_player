@@ -94,7 +94,7 @@ class BlnPlayer {
   }
 
   play(track) {
-    if (this.isPlaying) {
+    if (this.howl) {
       this.howl.stop();
     }
 
