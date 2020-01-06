@@ -261,10 +261,16 @@ class MusicControl {
       const aTrack = this.player.tracks[trackId];
       let kls = '';
       if (track.id === aTrack.id) kls = 'class="table-active"';
-      rows.push(`<tr ${kls}><td>${aTrack.title}</td>`
+      rows.push(`<tr data-id="${aTrack.id}" ${kls}><td>${aTrack.title}</td>`
                 + `<td>${aTrack.artist}</td></tr>`);
     });
     this.elList.innerHTML = rows.join('');
+
+    const trs = Array.from(this.elList.getElementsByTagName('tr'));
+    trs.forEach((elTr) => {
+      const aTrack = this.player.tracks[elTr.dataset.id];
+      elTr.addEventListener('click', () => this.player.play(aTrack));
+    });
 
     this.elArt.style.height = '40px';
     this.elArt.style.width = '40px';
