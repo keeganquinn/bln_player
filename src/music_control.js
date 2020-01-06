@@ -1,7 +1,7 @@
 import { Spinner } from 'spin.js';
 import { library, dom } from '@fortawesome/fontawesome-svg-core';
 import {
-  faBackward, faForward, faMusic, faPause, faPlay, faVolumeUp,
+  faBackward, faForward, faList, faMusic, faPause, faPlay, faVolumeUp,
 } from '@fortawesome/free-solid-svg-icons';
 import BlnPlayer from './bln_player';
 
@@ -25,6 +25,22 @@ const playerHtml = `
       </div>
     </div>
     <ul class="navbar-nav">
+      <li class="nav-item dropup">
+        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+          <span class="fa fa-fw fa-lg fa-list"></span></a>
+        <div id="playbox" class="dropdown-menu p-0">
+          <table class="table table-bordered table-hover table-sm small">
+            <thead class="thead-dark">
+              <tr>
+                <th class="w-50">Track</th>
+                <th class="w-50">Artist</th>
+              </tr>
+            </thead>
+            <tbody id="playlist">
+            </tbody>
+          </table>
+        </div>
+      </li>
       <li class="nav-item">
         <a id="prev" href="#" class="nav-link">
           <span class="fa fa-fw fa-lg fa-backward"></span></a></li>
@@ -49,9 +65,11 @@ const playerHtml = `
 class MusicControl {
   constructor() {
     this.elPlayer = null;
-    this.elPlayArt = null;
-    this.elPlayTrk = null;
-    this.elPlayRel = null;
+    this.elArt = null;
+    this.elBox = null;
+    this.elList = null;
+    this.elTrk = null;
+    this.elRel = null;
     this.elPrev = null;
     this.elPause = null;
     this.elNext = null;
@@ -100,7 +118,9 @@ class MusicControl {
     if (!this.player.playlist) return;
 
     // Enable font-awesome glyphs
-    library.add(faBackward, faForward, faMusic, faPause, faPlay, faVolumeUp);
+    library.add(
+      faBackward, faForward, faList, faMusic, faPause, faPlay, faVolumeUp,
+    );
     dom.watch();
 
     if (!this.elPlayer) {
@@ -113,9 +133,11 @@ class MusicControl {
     this.elPlayer.style.display = 'none';
     document.body.appendChild(this.elPlayer);
 
-    if (!this.elPlayArt) this.elPlayArt = document.getElementById('playart');
-    if (!this.elPlayTrk) this.elPlayTrk = document.getElementById('playtrk');
-    if (!this.elPlayRel) this.elPlayRel = document.getElementById('playrel');
+    if (!this.elArt) this.elArt = document.getElementById('playart');
+    if (!this.elBox) this.elBox = document.getElementById('playbox');
+    if (!this.elList) this.elList = document.getElementById('playlist');
+    if (!this.elTrk) this.elTrk = document.getElementById('playtrk');
+    if (!this.elRel) this.elRel = document.getElementById('playrel');
     if (!this.elPrev) {
       this.elPrev = document.getElementById('prev');
       this.elPrev.addEventListener('click', this.musicPrev.bind(this));
@@ -188,6 +210,9 @@ class MusicControl {
     }
     this.player.volume(vol * 0.01);
 
+    // TODO: change the icon based on the current volume
+    // this.elVolSel.innerHtml = ``;
+
     // No volume control on mobile; users have volume rocker instead
     if (this.isMobile) {
       this.elVolGrp.style.display = 'none';
@@ -231,19 +256,34 @@ class MusicControl {
       }
     });
 
-    this.elPlayArt.style.height = '40px';
-    this.elPlayArt.style.width = '40px';
-    this.elPlayArt.style.border = '1px solid #e9ecef';
-    this.elPlayArt.innerHTML = `<a href="${release.url}">`
+    const rows = [];
+    this.player.playlist.forEach((trackId) => {
+      const aTrack = this.player.tracks[trackId];
+      let kls = '';
+      if (track.id === aTrack.id) kls = 'class="table-active"';
+      rows.push(`<tr ${kls}><td>${aTrack.title}</td>`
+                + `<td>${aTrack.artist}</td></tr>`);
+    });
+    this.elList.innerHTML = rows.join('');
+
+    this.elArt.style.height = '40px';
+    this.elArt.style.width = '40px';
+    this.elArt.style.border = '1px solid #e9ecef';
+    this.elArt.innerHTML = `<a href="${release.url}">`
       + `<img src="${release.image}" alt="Cover" width="38" height="38"/></a>`;
-    this.elPlayTrk.style.fontSize = '0.8rem';
-    this.elPlayTrk.style.fontWeight = 'bold';
-    this.elPlayTrk.innerHTML = track.title;
-    this.elPlayRel.style.fontSize = '0.8rem';
-    this.elPlayRel.innerHTML = `<a href="${release.url}">`
+    this.elBox.style.left = '-10em';
+    this.elBox.style.maxHeight = '80vh';
+    this.elBox.style.maxWidth = '100%';
+    this.elBox.style.minWidth = '25em';
+    this.elBox.style.overflowX = 'hidden';
+    this.elTrk.style.fontSize = '0.8rem';
+    this.elTrk.style.fontWeight = 'bold';
+    this.elTrk.innerHTML = track.title;
+    this.elRel.style.fontSize = '0.8rem';
+    this.elRel.innerHTML = `<a href="${release.url}">`
       + `${track.artist} - ${release.title}</a>`;
-    this.elPlayRel.firstElementChild.style.textDecoration = 'none';
-    this.elPlayRel.firstElementChild.style.color = 'black';
+    this.elRel.firstElementChild.style.textDecoration = 'none';
+    this.elRel.firstElementChild.style.color = 'black';
 
     if (this.player.isLoading) {
       if (!this.spinner.el) {
