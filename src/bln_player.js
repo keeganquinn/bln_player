@@ -73,6 +73,14 @@ class BlnPlayer {
     }
 
     this.playlist = array;
+    if (this.isLoading || this.isPlaying) {
+      this.playlist.pop(this.track.id);
+      this.playlist.unshift(this.track.id);
+    } else {
+      this.track = this.tracks[this.playlist[0]];
+    }
+
+    if (this.onUpdate) this.onUpdate();
   }
 
   volume(vol) {
