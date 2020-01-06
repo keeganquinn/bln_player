@@ -2,7 +2,7 @@ import { Spinner } from 'spin.js';
 import { library, dom } from '@fortawesome/fontawesome-svg-core';
 import {
   faBackward, faForward, faList, faMusic, faPause, faPlay, faRandom,
-  faVolumeUp,
+  faVolumeDown, faVolumeMute, faVolumeOff, faVolumeUp,
 } from '@fortawesome/free-solid-svg-icons';
 import BlnPlayer from './bln_player';
 
@@ -57,7 +57,7 @@ const playerHtml = `
           <span class="fa fa-fw fa-lg fa-forward"></span></a></li>
       <li class="nav-item dropup" id="volgrp">
         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
-          <span id="volsel" class="fa fa-lg fa-volume-up"></span></a>
+          <span class="fa fa-fw fa-lg fa-volume-up"></span></a>
         <div class="dropdown-menu bg-secondary p-1">
           <div id="vol" class="noUi-target noUi-rtl noUi-vertical"></div>
         </div>
@@ -126,7 +126,7 @@ class MusicControl {
     // Enable font-awesome glyphs
     library.add(
       faBackward, faForward, faList, faMusic, faPause, faPlay, faRandom,
-      faVolumeUp,
+      faVolumeDown, faVolumeMute, faVolumeOff, faVolumeUp,
     );
     dom.watch();
 
@@ -136,8 +136,8 @@ class MusicControl {
       this.elPlayer.className = playerCls;
       this.elPlayer.innerHTML = playerHtml;
       this.elPlayer.dataset.turbolinksPermanent = '';
+      this.elPlayer.style.display = 'none';
     }
-    this.elPlayer.style.display = 'none';
     document.body.appendChild(this.elPlayer);
 
     if (!this.elArt) this.elArt = document.getElementById('playart');
@@ -162,7 +162,7 @@ class MusicControl {
       this.elNext.addEventListener('click', this.musicNext.bind(this));
     }
     if (!this.elVolGrp) this.elVolGrp = document.getElementById('volgrp');
-    if (!this.elVolSel) this.elVolSel = document.getElementById('volsel');
+    if (!this.elVolSel) this.elVolSel = this.elVolGrp.firstElementChild;
     if (!this.elVol) this.volumeLoad();
 
     this.elFoot = document.getElementById('foot');
@@ -214,21 +214,18 @@ class MusicControl {
   }
 
   volumeLoad() {
-    let vol = Cookies.get('volume');
-    if (vol) vol = parseInt(vol, 10);
-    if (!vol || vol > 100 || vol < 0) {
-      vol = 100;
-    }
-    this.player.volume(vol * 0.01);
-
-    // TODO: change the icon based on the current volume
-    // this.elVolSel.innerHtml = ``;
-
     // No volume control on mobile; users have volume rocker instead
     if (this.isMobile) {
       this.elVolGrp.style.display = 'none';
       return;
     }
+
+    let vol = Cookies.get('volume');
+    if (vol) vol = parseInt(vol, 10);
+    if (!vol || vol > 100 || vol < 0) {
+      vol = 100;
+    }
+    this.volumeApply(vol);
 
     this.elVol = document.getElementById('vol');
     this.elVol.parentElement.style.minWidth = '18px';
@@ -249,7 +246,15 @@ class MusicControl {
   volumeSet(values, handle) {
     const vol = parseInt(values[handle], 10);
     Cookies.set('volume', vol);
+    this.volumeApply(vol);
+  }
+
+  volumeApply(vol) {
     this.player.volume(vol * 0.01);
+
+    // Update the icon based on the current status.
+    const icon = (vol > 0) ? 'fa-volume-up' : 'fa-volume-mute';
+    this.elVolSel.innerHTML = `<span class="fa fa-fw fa-lg ${icon}"></span>`;
   }
 
   /**
