@@ -1,7 +1,8 @@
 import { Spinner } from 'spin.js';
 import { library, dom } from '@fortawesome/fontawesome-svg-core';
 import {
-  faBackward, faForward, faList, faMusic, faPause, faPlay, faVolumeUp,
+  faBackward, faForward, faList, faMusic, faPause, faPlay, faRandom,
+  faVolumeUp,
 } from '@fortawesome/free-solid-svg-icons';
 import BlnPlayer from './bln_player';
 
@@ -11,6 +12,7 @@ const noUiSlider = require('nouislider');
 require('spin.js/spin.css');
 require('nouislider/distribute/nouislider.css');
 
+const playerCls = 'navbar navbar-dark navbar-expand bg-secondary fixed-bottom';
 const playerHtml = `
   <div class="container">
     <div>
@@ -42,6 +44,9 @@ const playerHtml = `
         </div>
       </li>
       <li class="nav-item">
+        <a id="shuffle" href="#" class="nav-link">
+          <span class="fa fa-fw fa-lg fa-random"></span></a></li>
+      <li class="nav-item">
         <a id="prev" href="#" class="nav-link">
           <span class="fa fa-fw fa-lg fa-backward"></span></a></li>
       <li class="nav-item">
@@ -70,6 +75,7 @@ class MusicControl {
     this.elList = null;
     this.elTrk = null;
     this.elRel = null;
+    this.elShuffle = null;
     this.elPrev = null;
     this.elPause = null;
     this.elNext = null;
@@ -119,14 +125,15 @@ class MusicControl {
 
     // Enable font-awesome glyphs
     library.add(
-      faBackward, faForward, faList, faMusic, faPause, faPlay, faVolumeUp,
+      faBackward, faForward, faList, faMusic, faPause, faPlay, faRandom,
+      faVolumeUp,
     );
     dom.watch();
 
     if (!this.elPlayer) {
       this.elPlayer = document.createElement('div');
       this.elPlayer.id = 'player';
-      this.elPlayer.className = 'navbar navbar-dark navbar-expand bg-secondary fixed-bottom';
+      this.elPlayer.className = playerCls;
       this.elPlayer.innerHTML = playerHtml;
       this.elPlayer.dataset.turbolinksPermanent = '';
     }
@@ -138,6 +145,10 @@ class MusicControl {
     if (!this.elList) this.elList = document.getElementById('playlist');
     if (!this.elTrk) this.elTrk = document.getElementById('playtrk');
     if (!this.elRel) this.elRel = document.getElementById('playrel');
+    if (!this.elShuffle) {
+      this.elShuffle = document.getElementById('shuffle');
+      this.elShuffle.addEventListener('click', this.musicShuffle.bind(this));
+    }
     if (!this.elPrev) {
       this.elPrev = document.getElementById('prev');
       this.elPrev.addEventListener('click', this.musicPrev.bind(this));
@@ -321,6 +332,13 @@ class MusicControl {
 
   musicPause(event) {
     this.player.pause();
+
+    if (event) event.preventDefault();
+    return false;
+  }
+
+  musicShuffle(event) {
+    this.player.shuffle();
 
     if (event) event.preventDefault();
     return false;
