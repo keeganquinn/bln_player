@@ -104,6 +104,7 @@ class MusicControl {
 
   start(dataUrl) {
     this.player = new BlnPlayer({
+      html5: !this.isAndroid,
       onLoad: this.load.bind(this),
       onPlay: this.refresh.bind(this),
       onUpdate: this.refresh.bind(this),
@@ -132,7 +133,7 @@ class MusicControl {
 
     if (!this.elPlayer) {
       this.elPlayer = document.createElement('div');
-      this.elPlayer.id = 'player';
+      this.elPlayer.id = 'bln_player';
       this.elPlayer.className = playerCls;
       this.elPlayer.innerHTML = playerHtml;
       this.elPlayer.dataset.turbolinksPermanent = '';

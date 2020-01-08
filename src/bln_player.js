@@ -9,6 +9,7 @@ class BlnPlayer {
     const o = opts || {};
 
     this.howl = null;
+    this.html5 = o.html5;
     this.loop = 0;
     this.onLoad = o.onLoad || null;
     this.onPlay = o.onPlay || null;
@@ -110,6 +111,7 @@ class BlnPlayer {
     this.howl = new Howl({
       src: [track.webm, track.m4a, track.mp3],
       volume: this.vol,
+      html5: this.html5,
       onend: this.next.bind(this),
       onload: this.onUpdate,
       onplay: this.onPlay,
