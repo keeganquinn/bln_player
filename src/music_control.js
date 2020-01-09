@@ -223,9 +223,7 @@ class MusicControl {
 
     let vol = Cookies.get('volume');
     if (vol) vol = parseInt(vol, 10);
-    if (!vol || vol > 100 || vol < 0) {
-      vol = 100;
-    }
+    else vol = 100;
     this.volumeApply(vol);
 
     this.elVol = document.getElementById('vol');
