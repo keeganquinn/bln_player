@@ -1,5 +1,7 @@
 import { Howl } from 'howler';
 
+const log = require('loglevel')
+
 /** Play music published by basslin.es records. */
 class BlnPlayer {
   /**
@@ -125,7 +127,7 @@ class BlnPlayer {
 
     this.playlist = array;
     if (this.isLoading || this.isPlaying) {
-      this.playlist.pop(this.track.id);
+      this.playlist.splice(this.playlist.indexOf(this.track.id), 1);
       this.playlist.unshift(this.track.id);
     } else {
       this.track = this.tracks[this.playlist[0]];
@@ -188,6 +190,7 @@ class BlnPlayer {
   next() {
     const pos = this.playlist.indexOf(this.track.id);
     const next = this.playlist[pos + 1];
+    log.info(`BlnPlayer: next ${pos} -> ${next}`);
 
     if (next) this.play(this.tracks[next]);
     else if (this.onUpdate) this.onUpdate();
