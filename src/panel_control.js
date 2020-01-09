@@ -78,6 +78,11 @@ class PanelControl {
     );
     dom.watch();
 
+    if (!this.elTarget) {
+      this.elTarget = document.createElement('div');
+      document.body.appendChild(this.elTarget);
+    }
+
     this.elPlayer = document.getElementById('bln_panel');
     if (!this.elPlayer) {
       this.elPlayer = document.createElement('div');
