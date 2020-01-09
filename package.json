@@ -14,7 +14,7 @@
     "jsdoc": "jsdoc -r src -d jsdoc",
     "jsonlint": "jsonlint -q .*.json *.json",
     "pkglint": "npmPkgJsonLint .",
-    "prepare": "webpack",
+    "prepack": "webpack",
     "server": "http-server dist",
     "test": "jest --coverage"
   },

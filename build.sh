@@ -4,11 +4,11 @@
 
 set -ex
 
-yarn install --frozen-lockfile --ignore-scripts
+yarn install --frozen-lockfile
 
 
 yarn -s clean
-yarn -s prepare
+yarn -s prepack
 
 yarn -s test || true
 yarn -s jsdoc || true
