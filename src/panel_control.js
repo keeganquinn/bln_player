@@ -36,6 +36,7 @@ class PanelControl {
 
     this.autoPlay = o.autoPlay || null;
     this.autoShuffle = o.autoShuffle || null;
+    this.defaultVolume = o.defaultVolume || 100;
     this.elTarget = o.elTarget || null;
     this.sourceUrl = o.sourceUrl || null;
 
@@ -123,15 +124,13 @@ class PanelControl {
   volumeLoad() {
     let vol = Cookies.get('bln_volume');
     if (vol) vol = parseInt(vol, 10);
-    if (!vol || vol > 100 || vol < 0) {
-      vol = 100;
-    }
+    else vol = this.defaultVolume;
     this.player.volume(vol * 0.01);
 
     this.elVol = document.getElementById('bln_volume');
     this.elVol.style.width = '10em';
     noUiSlider.create(this.elVol, {
-      start: [this.player.vol * 100],
+      start: [vol],
       connect: [true, false],
       orientation: 'horizontal',
       direction: 'ltr',
@@ -152,10 +151,10 @@ class PanelControl {
   refresh() {
     const { track, release } = this.player;
 
-    this.elCover.innerHTML = `<a href="${release.url}">`
+    this.elCover.innerHTML = `<a href="${release.url}" target="_blank">`
       + `<img src="${release.image}" alt="Cover" width="38" height="38"/></a>`;
     this.elTrack.innerHTML = track.title;
-    this.elRelease.innerHTML = `<a href="${release.url}">`
+    this.elRelease.innerHTML = `<a href="${release.url}" target="_blank">`
       + `${track.artist} - ${release.title}</a>`;
 
     if (this.player.isPlaying || this.player.isLoading) {
