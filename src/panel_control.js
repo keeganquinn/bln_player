@@ -19,6 +19,8 @@ const playerHtml = `
       <span class="fa fa-fw fa-lg fa-play"></span></a>
     <a id="bln_next" href="#" class="btn btn-secondary">
       <span class="fa fa-fw fa-lg fa-forward"></span></a>
+    <a id="bln_shuffle" href="#" class="btn btn-secondary">
+      <span class="fa fa-fw fa-lg fa-random"></span></a>
     <div style="padding: 1em;">
       <div id="bln_volume" class="noUi-target noUi-ltr noUi-horizontal"></div>
     </div>
@@ -47,6 +49,7 @@ class PanelControl {
     this.elPrev = null;
     this.elPause = null;
     this.elNext = null;
+    this.elShuffle = null;
     this.elVol = null;
 
     this.player = null;
@@ -109,6 +112,10 @@ class PanelControl {
     if (!this.elNext) {
       this.elNext = document.getElementById('bln_next');
       this.elNext.addEventListener('click', this.next.bind(this));
+    }
+    if (!this.elShuffle) {
+      this.elShuffle = document.getElementById('bln_shuffle');
+      this.elShuffle.addEventListener('click', this.shuffle.bind(this));
     }
 
     if (!this.elVol) this.volumeLoad();
@@ -180,6 +187,13 @@ class PanelControl {
 
   next(event) {
     this.player.next();
+
+    if (event) event.preventDefault();
+    return false;
+  }
+
+  shuffle(event) {
+    this.player.shuffle();
 
     if (event) event.preventDefault();
     return false;
