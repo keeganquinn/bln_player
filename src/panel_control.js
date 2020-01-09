@@ -39,6 +39,7 @@ class PanelControl {
     this.autoPlay = o.autoPlay || null;
     this.autoShuffle = o.autoShuffle || null;
     this.defaultVolume = o.defaultVolume || 100;
+    this.html5 = o.html5;
     this.elTarget = o.elTarget || null;
     this.sourceUrl = o.sourceUrl || null;
 
@@ -53,16 +54,11 @@ class PanelControl {
     this.elVol = null;
 
     this.player = null;
-    this.userAgent = navigator.userAgent;
-  }
-
-  get isAndroid() {
-    return /(android)/i.test(this.userAgent);
   }
 
   start() {
     this.player = new BlnPlayer({
-      html5: !this.isAndroid,
+      html5: this.html5,
       onLoad: this.load.bind(this),
       onPlay: this.refresh.bind(this),
       onUpdate: this.refresh.bind(this),
