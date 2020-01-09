@@ -63,6 +63,56 @@ class BlnPlayer {
     if (this.onLoad) this.onLoad();
   }
 
+  resetPlaylist() {
+    const playlist = [];
+
+    this.releases.forEach((release) => {
+      release.tracks.forEach((track) => {
+        if (track.webm && track.m4a && track.mp3) playlist.push(track.id);
+      });
+    });
+
+    this.playlist = playlist.reverse();
+    this.play(this.tracks[this.playlist[0]]);
+  }
+
+  selectArtist(artist) {
+    const playlist = [];
+
+    this.releases.forEach((release) => {
+      if (release.artist.code === artist
+          || (release.andArtist && release.andArtist.code === artist)) {
+        release.tracks.forEach((track) => {
+          if (track.webm && track.m4a && track.mp3) playlist.push(track.id);
+        });
+      }
+    });
+
+    if (playlist.length > 0) {
+      this.playlist = playlist.reverse();
+      this.play(this.tracks[this.playlist[0]]);
+    }
+  }
+
+  selectTag(tag) {
+    const playlist = [];
+
+    this.releases.forEach((release) => {
+      if (release.tagList.indexOf(tag) > -1) {
+        release.tracks.forEach((track) => {
+          if (track.webm && track.m4a && track.mp3) playlist.push(track.id);
+        });
+      }
+    });
+
+    if (playlist.length > 0) {
+      if (this.howl) this.howl.stop();
+      this.playlist = playlist.reverse();
+      this.shuffle();
+      this.play(this.tracks[this.playlist[0]]);
+    }
+  }
+
   shuffle() {
     const array = this.playlist;
 

@@ -1,8 +1,8 @@
 import { Spinner } from 'spin.js';
 import { library, dom } from '@fortawesome/fontawesome-svg-core';
 import {
-  faBackward, faForward, faList, faMusic, faPause, faPlay, faRandom,
-  faVolumeDown, faVolumeMute, faVolumeOff, faVolumeUp,
+  faBackward, faForward, faGripHorizontal, faList, faMusic, faPause,
+  faPlay, faRandom, faVolumeDown, faVolumeMute, faVolumeOff, faVolumeUp,
 } from '@fortawesome/free-solid-svg-icons';
 import BlnPlayer from './bln_player';
 
@@ -29,7 +29,31 @@ const playerHtml = `
     <ul class="navbar-nav">
       <li class="nav-item dropup">
         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
-          <span class="fa fa-fw fa-lg fa-list"></span></a>
+          <span class="fa fa-fw fa-grip-horizontal"></span></a>
+        <div class="dropdown-menu p-1">
+          <b>All Releases</b>
+          <div class="list-group small">
+            <a href="#" id="allsel">Load All Tracks</a>
+          </div>
+
+          <b>By Artist</b>
+          <div id="artsel" class="list-group small">
+            <a href="#" data-artist="hrd">HRD</a>
+            <a href="#" data-artist="kQ">Keegan Quinn</a>
+            <a href="#" data-artist="str1ng">str1ng</a>
+            <a href="#" data-artist="wabisabi">Wabi$abi</a>
+          </div>
+
+          <b>By Genre</b>
+          <div id="tagsel" class="list-group small">
+            <a href="#" data-tag="electronic">Electronic</a>
+            <a href="#" data-tag="rap">Rap</a>
+          </div>
+        </div>
+      </li>
+      <li class="nav-item dropup">
+        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+          <span class="fa fa-fw fa-list"></span></a>
         <div id="playbox" class="dropdown-menu p-0">
           <table class="table table-bordered table-hover table-sm small">
             <thead class="thead-dark">
@@ -45,7 +69,7 @@ const playerHtml = `
       </li>
       <li class="nav-item">
         <a id="shuffle" href="#" class="nav-link">
-          <span class="fa fa-fw fa-lg fa-random"></span></a></li>
+          <span class="fa fa-fw fa-random"></span></a></li>
       <li class="nav-item">
         <a id="prev" href="#" class="nav-link">
           <span class="fa fa-fw fa-lg fa-backward"></span></a></li>
@@ -57,7 +81,7 @@ const playerHtml = `
           <span class="fa fa-fw fa-lg fa-forward"></span></a></li>
       <li class="nav-item dropup" id="volgrp">
         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
-          <span class="fa fa-fw fa-lg fa-volume-up"></span></a>
+          <span class="fa fa-fw fa-volume-up"></span></a>
         <div class="dropdown-menu bg-secondary p-1">
           <div id="vol" class="noUi-target noUi-rtl noUi-vertical"></div>
         </div>
@@ -126,8 +150,8 @@ class MusicControl {
 
     // Enable font-awesome glyphs
     library.add(
-      faBackward, faForward, faList, faMusic, faPause, faPlay, faRandom,
-      faVolumeDown, faVolumeMute, faVolumeOff, faVolumeUp,
+      faBackward, faForward, faGripHorizontal, faList, faMusic, faPause,
+      faPlay, faRandom, faVolumeDown, faVolumeMute, faVolumeOff, faVolumeUp,
     );
     dom.watch();
 
@@ -210,6 +234,36 @@ class MusicControl {
       });
     });
 
+    const elAllSel = document.getElementById('allsel');
+    elAllSel.className = 'list-group-item list-group-item-action';
+    elAllSel.addEventListener('click', (event) => {
+      this.player.resetPlaylist();
+      event.preventDefault();
+      return false;
+    });
+
+    const elArtSel = document.getElementById('artsel');
+    Array.from(elArtSel.getElementsByTagName('a')).forEach((link) => {
+      const elLink = link;
+      elLink.className = 'list-group-item list-group-item-action';
+      elLink.addEventListener('click', (event) => {
+        this.player.selectArtist(elLink.dataset.artist);
+        event.preventDefault();
+        return false;
+      });
+    });
+
+    const elTagSel = document.getElementById('tagsel');
+    Array.from(elTagSel.getElementsByTagName('a')).forEach((link) => {
+      const elLink = link;
+      elLink.className = 'list-group-item list-group-item-action';
+      elLink.addEventListener('click', (event) => {
+        this.player.selectTag(elLink.dataset.tag);
+        event.preventDefault();
+        return false;
+      });
+    });
+
     this.elPlayer.style.display = 'block';
     this.refresh();
   }
@@ -253,7 +307,7 @@ class MusicControl {
 
     // Update the icon based on the current status.
     const icon = (vol > 0) ? 'fa-volume-up' : 'fa-volume-mute';
-    this.elVolSel.innerHTML = `<span class="fa fa-fw fa-lg ${icon}"></span>`;
+    this.elVolSel.innerHTML = `<span class="fa fa-fw ${icon}"></span>`;
   }
 
   /**
