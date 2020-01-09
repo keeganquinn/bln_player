@@ -79,6 +79,7 @@ class BlnPlayer {
       this.playlist.unshift(this.track.id);
     } else {
       this.track = this.tracks[this.playlist[0]];
+      this.howl = null;
     }
 
     if (this.onUpdate) this.onUpdate();
