@@ -128,6 +128,7 @@ class MusicControl {
 
   start(dataUrl) {
     this.player = new BlnPlayer({
+      autoLoop: true,
       html5: !this.isAndroid,
       onLoad: this.load.bind(this),
       onPlay: this.refresh.bind(this),
