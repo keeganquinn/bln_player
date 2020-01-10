@@ -1,6 +1,6 @@
 import { Howl } from 'howler';
 
-const log = require('loglevel')
+const log = require('loglevel');
 
 /** Play music published by basslin.es records. */
 class BlnPlayer {
@@ -10,18 +10,23 @@ class BlnPlayer {
   constructor(opts) {
     const o = opts || {};
 
-    this.howl = null;
+    this.autoLoop = o.autoLoop || null;
+    this.autoPlay = o.autoPlay || null;
+    this.autoShuffle = o.autoShuffle || null;
+    this.autoTag = o.autoTag || null;
     this.html5 = o.html5;
-    this.loop = 0;
     this.onLoad = o.onLoad || null;
     this.onPlay = o.onPlay || null;
     this.onUpdate = o.onUpdate || null;
+    this.sourceUrl = o.sourceUrl || 'https://basslin.es/releases.json';
+    this.vol = o.vol || 1.0;
+
+    this.howl = null;
+    this.loop = 0;
     this.playlist = null;
     this.releases = null;
-    this.sourceUrl = o.sourceUrl || 'https://basslin.es/releases.json';
     this.track = null;
     this.tracks = null;
-    this.vol = o.vol || 1.0;
   }
 
   /**
@@ -62,7 +67,11 @@ class BlnPlayer {
     this.tracks = tracks;
     this.track = tracks[playlist[0]];
 
+    if (this.autoLoop) this.loop = this.autoLoop;
+    if (this.autoShuffle) this.shuffle();
     if (this.onLoad) this.onLoad();
+    if (this.autoTag) this.selectTag(this.autoTag);
+    if (this.autoPlay) this.pause();
   }
 
   resetPlaylist() {
@@ -193,6 +202,7 @@ class BlnPlayer {
     log.info(`BlnPlayer: next ${pos} -> ${next}`);
 
     if (next) this.play(this.tracks[next]);
+    else if (this.loop) this.play(this.tracks[this.playlist[0]]);
     else if (this.onUpdate) this.onUpdate();
   }
 
