@@ -36,8 +36,10 @@ class PanelControl {
   constructor(opts) {
     const o = opts || {};
 
+    this.autoLoop = o.autoLoop || null;
     this.autoPlay = o.autoPlay || null;
     this.autoShuffle = o.autoShuffle || null;
+    this.autoTag = o.autoTag || null;
     this.defaultVolume = o.defaultVolume || 100;
     this.html5 = o.html5;
     this.elTarget = o.elTarget || null;
@@ -58,6 +60,10 @@ class PanelControl {
 
   start() {
     this.player = new BlnPlayer({
+      autoLoop: this.autoLoop,
+      autoPlay: this.autoPlay,
+      autoShuffle: this.autoShuffle,
+      autoTag: this.autoTag,
       html5: this.html5,
       onLoad: this.load.bind(this),
       onPlay: this.refresh.bind(this),
@@ -116,11 +122,7 @@ class PanelControl {
 
     if (!this.elVol) this.volumeLoad();
 
-    if (this.autoShuffle) this.player.shuffle();
-
-    if (this.autoPlay) this.player.pause();
-    else this.refresh();
-
+    this.refresh();
     this.elPlayer.style.display = 'block';
   }
 
