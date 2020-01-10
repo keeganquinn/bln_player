@@ -25,8 +25,8 @@ function startMusicControl(event) {
 function startPanelControl(event) {
   const elPanelTarget = document.getElementById('panelTarget');
   const panelControl = new PanelControl({
-    autoPlay: true,
-    autoShuffle: true,
+    autoLoop: true,
+    autoTag: 'electronic',
     elTarget: elPanelTarget,
   });
   panelControl.start();
