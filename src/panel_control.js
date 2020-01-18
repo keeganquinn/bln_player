@@ -41,6 +41,7 @@ class PanelControl {
     this.autoShuffle = o.autoShuffle || null;
     this.autoTag = o.autoTag || null;
     this.defaultVolume = o.defaultVolume || 100;
+    this.eventsUrl = o.eventsUrl;
     this.html5 = o.html5;
     this.elTarget = o.elTarget || null;
     this.sourceUrl = o.sourceUrl || null;
@@ -64,6 +65,7 @@ class PanelControl {
       autoPlay: this.autoPlay,
       autoShuffle: this.autoShuffle,
       autoTag: this.autoTag,
+      eventsUrl: this.eventsUrl,
       html5: this.html5,
       onLoad: this.load.bind(this),
       onPlay: this.refresh.bind(this),

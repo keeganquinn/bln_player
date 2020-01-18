@@ -1,3 +1,4 @@
+import ahoy from 'ahoy.js';
 import { Howl } from 'howler';
 
 const log = require('loglevel');
@@ -14,6 +15,7 @@ class BlnPlayer {
     this.autoPlay = o.autoPlay || null;
     this.autoShuffle = o.autoShuffle || null;
     this.autoTag = o.autoTag || null;
+    this.eventsUrl = o.eventsUrl || 'https://basslin.es/ahoy/events';
     this.html5 = o.html5;
     this.onLoad = o.onLoad || null;
     this.onPlay = o.onPlay || null;
@@ -33,6 +35,11 @@ class BlnPlayer {
    * Initiate retrieval of release data from a remote URL.
    */
   load() {
+    ahoy.configure({
+      eventsUrl: this.eventsUrl,
+      trackVisits: false,
+    });
+
     window.player = this;
 
     const reqData = new XMLHttpRequest();
@@ -170,6 +177,13 @@ class BlnPlayer {
     }
 
     this.track = track;
+    ahoy.track('$play', {
+      track: {
+        id: track.id,
+        title: track.title,
+        artist: track.artist,
+      }
+    });
     this.howl = new Howl({
       src: [track.webm, track.m4a, track.mp3],
       volume: this.vol,

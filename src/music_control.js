@@ -92,7 +92,12 @@ const playerHtml = `
 
 /** MusicControl handles UI interactions to control a BlnPlayer. */
 class MusicControl {
-  constructor() {
+  constructor(opts) {
+    const o = opts || {};
+
+    this.eventsUrl = o.eventsUrl;
+    this.sourceUrl = o.sourceUrl;
+
     this.elPlayer = null;
     this.elArt = null;
     this.elBox = null;
@@ -126,14 +131,15 @@ class MusicControl {
     return this.isAndroid || this.isIos;
   }
 
-  start(dataUrl) {
+  start() {
     this.player = new BlnPlayer({
       autoLoop: true,
+      eventsUrl: this.eventsUrl,
       html5: !this.isAndroid,
       onLoad: this.load.bind(this),
       onPlay: this.refresh.bind(this),
       onUpdate: this.refresh.bind(this),
-      sourceUrl: dataUrl,
+      sourceUrl: this.sourceUrl,
     });
 
     this.player.load();
