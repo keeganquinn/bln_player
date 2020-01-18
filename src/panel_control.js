@@ -36,6 +36,8 @@ class PanelControl {
   constructor(opts) {
     const o = opts || {};
 
+    this.apiKey = o.apiKey;
+    this.apiSecret = o.apiSecret;
     this.autoLoop = o.autoLoop || null;
     this.autoPlay = o.autoPlay || null;
     this.autoShuffle = o.autoShuffle || null;
@@ -61,6 +63,8 @@ class PanelControl {
 
   start() {
     this.player = new BlnPlayer({
+      apiKey: this.apiKey,
+      apiSecret: this.apiSecret,
       autoLoop: this.autoLoop,
       autoPlay: this.autoPlay,
       autoShuffle: this.autoShuffle,

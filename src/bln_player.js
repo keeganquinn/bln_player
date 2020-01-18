@@ -11,6 +11,8 @@ class BlnPlayer {
   constructor(opts) {
     const o = opts || {};
 
+    this.apiKey = o.apiKey;
+    this.apiSecret = o.apiSecret;
     this.autoLoop = o.autoLoop || null;
     this.autoPlay = o.autoPlay || null;
     this.autoShuffle = o.autoShuffle || null;
@@ -178,11 +180,15 @@ class BlnPlayer {
 
     this.track = track;
     ahoy.track('$play', {
+      apiKey: this.apiKey,
+      apiSecret: this.apiSecret,
+      origin: window.location.href,
       track: {
         id: track.id,
         title: track.title,
         artist: track.artist,
       },
+      vol: this.vol,
     });
     this.howl = new Howl({
       src: [track.webm, track.m4a, track.mp3],

@@ -95,6 +95,8 @@ class MusicControl {
   constructor(opts) {
     const o = opts || {};
 
+    this.apiKey = o.apiKey;
+    this.apiSecret = o.apiSecret;
     this.eventsUrl = o.eventsUrl;
     this.sourceUrl = o.sourceUrl;
 
@@ -133,6 +135,8 @@ class MusicControl {
 
   start() {
     this.player = new BlnPlayer({
+      apiKey: this.apiKey,
+      apiSecret: this.apiSecret,
       autoLoop: true,
       eventsUrl: this.eventsUrl,
       html5: !this.isAndroid,
