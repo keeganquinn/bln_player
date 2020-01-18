@@ -182,7 +182,7 @@ class BlnPlayer {
         id: track.id,
         title: track.title,
         artist: track.artist,
-      }
+      },
     });
     this.howl = new Howl({
       src: [track.webm, track.m4a, track.mp3],
