@@ -42,7 +42,7 @@ class PanelControl {
     this.autoPlay = o.autoPlay || null;
     this.autoShuffle = o.autoShuffle || null;
     this.autoTag = o.autoTag || null;
-    this.defaultVolume = o.defaultVolume || 100;
+    this.defaultVol = o.defaultVol || 100;
     this.eventsUrl = o.eventsUrl;
     this.html5 = o.html5;
     this.elTarget = o.elTarget || null;
@@ -135,7 +135,7 @@ class PanelControl {
   volumeLoad() {
     let vol = Cookies.get('bln_volume');
     if (vol) vol = parseInt(vol, 10);
-    else vol = this.defaultVolume;
+    else vol = this.defaultVol;
     this.player.volume(vol * 0.01);
 
     this.elVol = document.getElementById('bln_volume');
