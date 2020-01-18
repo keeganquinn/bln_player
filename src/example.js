@@ -14,7 +14,9 @@ const html = `
 `;
 
 function startMusicControl(event) {
-  const musicControl = new MusicControl();
+  const musicControl = new MusicControl({
+    apiKey: 'example_MusicControl',
+  });
   musicControl.start();
   musicControl.load();
 
@@ -25,8 +27,10 @@ function startMusicControl(event) {
 function startPanelControl(event) {
   const elPanelTarget = document.getElementById('panelTarget');
   const panelControl = new PanelControl({
+    apiKey: 'example_PanelControl',
     autoLoop: true,
     autoTag: 'electronic',
+    defaultVol: 50,
     elTarget: elPanelTarget,
   });
   panelControl.start();
