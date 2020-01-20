@@ -38,15 +38,15 @@ class PanelControl {
 
     this.apiKey = o.apiKey;
     this.apiSecret = o.apiSecret;
-    this.autoLoop = o.autoLoop || null;
-    this.autoPlay = o.autoPlay || null;
-    this.autoShuffle = o.autoShuffle || null;
-    this.autoTag = o.autoTag || null;
+    this.autoLoop = o.autoLoop;
+    this.autoPlay = o.autoPlay;
+    this.autoShuffle = o.autoShuffle;
+    this.autoTag = o.autoTag;
     this.defaultVol = o.defaultVol || 100;
     this.eventsUrl = o.eventsUrl;
     this.html5 = o.html5;
-    this.elTarget = o.elTarget || null;
-    this.sourceUrl = o.sourceUrl || null;
+    this.elTarget = o.elTarget;
+    this.sourceUrl = o.sourceUrl;
 
     this.elPlayer = null;
     this.elCover = null;

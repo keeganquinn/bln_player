@@ -13,15 +13,15 @@ class BlnPlayer {
 
     this.apiKey = o.apiKey;
     this.apiSecret = o.apiSecret;
-    this.autoLoop = o.autoLoop || null;
-    this.autoPlay = o.autoPlay || null;
-    this.autoShuffle = o.autoShuffle || null;
-    this.autoTag = o.autoTag || null;
+    this.autoLoop = o.autoLoop;
+    this.autoPlay = o.autoPlay;
+    this.autoShuffle = o.autoShuffle;
+    this.autoTag = o.autoTag;
     this.eventsUrl = o.eventsUrl || 'https://basslin.es/ahoy/events';
     this.html5 = o.html5;
-    this.onLoad = o.onLoad || null;
-    this.onPlay = o.onPlay || null;
-    this.onUpdate = o.onUpdate || null;
+    this.onLoad = o.onLoad;
+    this.onPlay = o.onPlay;
+    this.onUpdate = o.onUpdate;
     this.sourceUrl = o.sourceUrl || 'https://basslin.es/releases.json';
     this.vol = o.vol || 1.0;
 
