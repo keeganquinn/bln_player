@@ -2,7 +2,6 @@ bln_player
 ==========
 
 [![Build Status](https://ci.quinn.tk/job/bln_player/badge/icon)](https://ci.quinn.tk/job/bln_player/)
-[![Code Climate](https://codeclimate.com/github/keeganquinn/bln_player/badges/gpa.svg)](https://codeclimate.com/github/keeganquinn/bln_player)
 [![Documentation Status](http://inch-ci.org/github/keeganquinn/bln_player.svg?branch=master)](http://inch-ci.org/github/keeganquinn/bln_player)
 
 bln_player is a JavaScript web component to play music published by
