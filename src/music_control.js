@@ -29,37 +29,23 @@ const playerHtml = `
     <ul class="navbar-nav">
       <li class="nav-item dropup">
         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
-          <span class="fa fa-fw fa-grip-horizontal"></span></a>
-        <div class="dropdown-menu p-1">
-          <b>All Releases</b>
-          <div class="list-group small">
-            <a href="#" id="allsel">Load All Tracks</a>
-          </div>
-
-          <b>By Artist</b>
-          <div id="artsel" class="list-group small">
-            <a href="#" data-artist="hrd">HRD</a>
-            <a href="#" data-artist="kQ">Keegan Quinn</a>
-            <a href="#" data-artist="str1ng">str1ng</a>
-            <a href="#" data-artist="wabisabi">Wabi$abi</a>
-          </div>
-
-          <b>By Genre</b>
-          <div id="tagsel" class="list-group small">
-            <a href="#" data-tag="electronic">Electronic</a>
-            <a href="#" data-tag="rap">Rap</a>
-          </div>
-        </div>
-      </li>
-      <li class="nav-item dropup">
-        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
           <span class="fa fa-fw fa-list"></span></a>
         <div id="playbox" class="dropdown-menu p-0">
+          Select Playlist:
+          <select id="playsel">
+            <option value="all">All Releases</option>
+            <option value="electronic">Shuffle Electronic</option>
+            <option value="rap">Shuffle Rap</option>
+            <option value="hrd">HRD</option>
+            <option value="kQ">Keegan Quinn</option>
+            <option value="str1ng">str1ng</option>
+            <option value="wabisabi">Wabi$abi</option>
+          </select>
+
           <table class="table table-bordered table-hover table-sm small">
             <thead class="thead-dark">
               <tr>
-                <th class="w-50">Track</th>
-                <th class="w-50">Artist</th>
+                <th>Track</th>
               </tr>
             </thead>
             <tbody id="playlist">
@@ -245,34 +231,22 @@ class MusicControl {
       });
     });
 
-    const elAllSel = document.getElementById('allsel');
-    elAllSel.className = 'list-group-item list-group-item-action';
-    elAllSel.addEventListener('click', (event) => {
-      this.player.resetPlaylist();
-      event.preventDefault();
-      return false;
-    });
-
-    const elArtSel = document.getElementById('artsel');
-    Array.from(elArtSel.getElementsByTagName('a')).forEach((link) => {
-      const elLink = link;
-      elLink.className = 'list-group-item list-group-item-action';
-      elLink.addEventListener('click', (event) => {
-        this.player.selectArtist(elLink.dataset.artist);
-        event.preventDefault();
-        return false;
-      });
-    });
-
-    const elTagSel = document.getElementById('tagsel');
-    Array.from(elTagSel.getElementsByTagName('a')).forEach((link) => {
-      const elLink = link;
-      elLink.className = 'list-group-item list-group-item-action';
-      elLink.addEventListener('click', (event) => {
-        this.player.selectTag(elLink.dataset.tag);
-        event.preventDefault();
-        return false;
-      });
+    const elPlaySel = document.getElementById('playsel');
+    elPlaySel.addEventListener('change', () => {
+      switch (elPlaySel.value) {
+        case 'electronic':
+        case 'rap':
+          this.player.selectTag(elPlaySel.value);
+          break;
+        case 'hrd':
+        case 'kQ':
+        case 'str1ng':
+        case 'wabisabi':
+          this.player.selectArtist(elPlaySel.value);
+          break;
+        default:
+          this.player.resetPlaylist();
+      }
     });
 
     this.elPlayer.style.display = 'block';
@@ -341,8 +315,8 @@ class MusicControl {
       const aTrack = this.player.tracks[trackId];
       let kls = '';
       if (track.id === aTrack.id) kls = 'class="table-active"';
-      rows.push(`<tr data-id="${aTrack.id}" ${kls}><td>${aTrack.title}</td>`
-                + `<td>${aTrack.artist}</td></tr>`);
+      rows.push(`<tr data-id="${aTrack.id}" ${kls}><td>`
+                + `${aTrack.artist} - ${aTrack.title}</td></tr>`);
     });
     this.elList.innerHTML = rows.join('');
 
@@ -357,10 +331,10 @@ class MusicControl {
     this.elArt.style.border = '1px solid #e9ecef';
     this.elArt.innerHTML = `<a href="${release.url}">`
       + `<img src="${release.image}" alt="Cover" width="38" height="38"/></a>`;
-    this.elBox.style.left = '-10em';
-    this.elBox.style.maxHeight = '80vh';
+    this.elBox.style.left = '-1em';
+    this.elBox.style.maxHeight = '75vh';
     this.elBox.style.maxWidth = '100%';
-    this.elBox.style.minWidth = '25em';
+    this.elBox.style.minWidth = '19em';
     this.elBox.style.overflowX = 'hidden';
     this.elTrk.style.fontSize = '0.8rem';
     this.elTrk.style.fontWeight = 'bold';
