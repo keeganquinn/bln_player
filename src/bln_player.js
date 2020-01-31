@@ -49,9 +49,9 @@ class BlnPlayer {
   loadData(event, data) {
     const { player } = window;
     const response = data || JSON.parse(this.responseText);
-    player.loadReleases(response.releases);
     player.visitToken = response.visitToken;
     player.visitorToken = response.visitorToken;
+    player.loadReleases(response.releases);
   }
 
   loadReleases(releaseData) {
