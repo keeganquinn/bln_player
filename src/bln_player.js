@@ -1,4 +1,3 @@
-import ahoy from 'ahoy.js';
 import { Howl } from 'howler';
 
 const log = require('loglevel');
@@ -22,7 +21,7 @@ class BlnPlayer {
     this.onLoad = o.onLoad;
     this.onPlay = o.onPlay;
     this.onUpdate = o.onUpdate;
-    this.sourceUrl = o.sourceUrl || 'https://basslin.es/releases.json';
+    this.sourceUrl = o.sourceUrl || 'https://basslin.es/player.json';
     this.vol = o.vol || 1.0;
 
     this.howl = null;
@@ -31,17 +30,14 @@ class BlnPlayer {
     this.releases = null;
     this.track = null;
     this.tracks = null;
+    this.visitToken = null;
+    this.visitorToken = null;
   }
 
   /**
    * Initiate retrieval of release data from a remote URL.
    */
   load() {
-    ahoy.configure({
-      eventsUrl: this.eventsUrl,
-      trackVisits: false,
-    });
-
     window.player = this;
 
     const reqData = new XMLHttpRequest();
@@ -54,6 +50,8 @@ class BlnPlayer {
     const { player } = window;
     const response = data || JSON.parse(this.responseText);
     player.loadReleases(response.releases);
+    player.visitToken = response.visitToken;
+    player.visitorToken = response.visitorToken;
   }
 
   loadReleases(releaseData) {
@@ -179,17 +177,7 @@ class BlnPlayer {
     }
 
     this.track = track;
-    ahoy.track('$play', {
-      apiKey: this.apiKey,
-      apiSecret: this.apiSecret,
-      origin: window.location.href,
-      track: {
-        id: track.id,
-        title: track.title,
-        artist: track.artist,
-      },
-      vol: this.vol,
-    });
+    this.sendEvent();
     this.howl = new Howl({
       src: [track.webm, track.m4a, track.mp3],
       volume: this.vol,
@@ -202,6 +190,34 @@ class BlnPlayer {
 
     if (this.onUpdate) this.onUpdate();
     this.howl.play();
+  }
+
+  sendEvent() {
+    const data = {
+      events: [{
+        name: '$play',
+        properties: {
+          apiKey: this.apiKey,
+          apiSecret: this.apiSecret,
+          origin: window.location.href,
+          track: {
+            id: this.track.id,
+            title: this.track.title,
+            artist: this.track.artist,
+          },
+          vol: this.vol,
+        },
+        time: (new Date()).getTime() / 1000.0,
+        js: true,
+      }],
+      visit_token: this.visitToken,
+      visitor_token: this.visitorToken,
+    };
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', this.eventsUrl, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify(data));
   }
 
   pause() {
