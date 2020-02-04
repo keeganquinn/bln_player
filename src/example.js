@@ -29,7 +29,9 @@ function startPanelControl(event) {
   const panelControl = new PanelControl({
     apiKey: 'example_PanelControl',
     autoLoop: true,
-    autoTag: 'electronic',
+    autoPlay: true,
+    autoShuffle: true,
+    defaultPlaylist: 'electronic',
     defaultVol: 50,
     elTarget: elPanelTarget,
   });

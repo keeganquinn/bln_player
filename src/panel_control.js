@@ -41,7 +41,7 @@ class PanelControl {
     this.autoLoop = o.autoLoop;
     this.autoPlay = o.autoPlay;
     this.autoShuffle = o.autoShuffle;
-    this.autoTag = o.autoTag;
+    this.defaultPlaylist = o.defaultPlaylist;
     this.defaultVol = o.defaultVol || 100;
     this.eventsUrl = o.eventsUrl;
     this.html5 = o.html5;
@@ -68,7 +68,7 @@ class PanelControl {
       autoLoop: this.autoLoop,
       autoPlay: this.autoPlay,
       autoShuffle: this.autoShuffle,
-      autoTag: this.autoTag,
+      defaultPlaylist: this.defaultPlaylist,
       eventsUrl: this.eventsUrl,
       html5: this.html5,
       onLoad: this.load.bind(this),
@@ -81,7 +81,7 @@ class PanelControl {
   }
 
   load() {
-    if (!this.player.playlist) return;
+    if (!this.player.track) return;
 
     // Enable font-awesome glyphs
     library.add(
@@ -160,6 +160,8 @@ class PanelControl {
   }
 
   refresh() {
+    if (!this.player.track) return;
+
     const { track, release } = this.player;
 
     this.elCover.innerHTML = `<a href="${release.url}" target="_blank">`

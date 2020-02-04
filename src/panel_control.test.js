@@ -18,6 +18,14 @@ const releases = [{
   }],
 }];
 
+const playlists = [{
+  id: 1,
+  code: 'all',
+  title: 'All Releases',
+  autoShuffle: false,
+  tracks: [1, 2],
+}];
+
 describe('PanelControl', () => {
   let panelControl;
   beforeEach(() => {
@@ -32,7 +40,8 @@ describe('PanelControl', () => {
     beforeEach(() => {
       panelControl.start();
       panelControl.player.loadReleases(releases);
-      panelControl.load();
+      panelControl.player.loadPlaylists(playlists);
+      panelControl.player.ready();
     });
 
     it('has references', () => {

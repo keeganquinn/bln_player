@@ -15,7 +15,7 @@ class BlnPlayer {
     this.autoLoop = o.autoLoop;
     this.autoPlay = o.autoPlay;
     this.autoShuffle = o.autoShuffle;
-    this.autoTag = o.autoTag;
+    this.defaultPlaylist = o.defaultPlaylist || 'all';
     this.eventsUrl = o.eventsUrl || 'https://basslin.es/ahoy/events';
     this.html5 = o.html5;
     this.onLoad = o.onLoad;
@@ -27,6 +27,7 @@ class BlnPlayer {
     this.howl = null;
     this.loop = 0;
     this.playlist = null;
+    this.playlists = null;
     this.releases = null;
     this.track = null;
     this.tracks = null;
@@ -52,10 +53,11 @@ class BlnPlayer {
     player.visitToken = response.visitToken;
     player.visitorToken = response.visitorToken;
     player.loadReleases(response.releases);
+    player.loadPlaylists(response.playlists);
+    player.ready();
   }
 
   loadReleases(releaseData) {
-    const playlist = [];
     const releases = [];
     const tracks = [];
 
@@ -64,71 +66,41 @@ class BlnPlayer {
       release.tracks.forEach((track) => {
         if (track.webm && track.m4a && track.mp3) {
           tracks[track.id] = track;
-          playlist.push(track.id);
         }
       });
     });
 
-    this.playlist = playlist;
     this.releases = releases;
     this.tracks = tracks;
-    this.track = tracks[playlist[0]];
+  }
+
+  loadPlaylists(playlistData) {
+    const playlists = [];
+
+    playlistData.forEach((playlist) => {
+      playlists[playlist.id] = playlist;
+      if (playlist.code === this.defaultPlaylist) {
+        this.playlist = playlist.tracks;
+      }
+    });
+
+    this.playlists = playlists;
+  }
+
+  ready() {
+    this.track = this.tracks[this.playlist[0]];
 
     if (this.autoLoop) this.loop = this.autoLoop;
-    if (this.autoShuffle) this.shuffle();
     if (this.onLoad) this.onLoad();
-    if (this.autoTag) this.selectTag(this.autoTag);
+    if (this.autoShuffle) this.shuffle();
     if (this.autoPlay) this.pause();
   }
 
-  resetPlaylist() {
-    const playlist = [];
-
-    this.releases.forEach((release) => {
-      release.tracks.forEach((track) => {
-        if (track.webm && track.m4a && track.mp3) playlist.push(track.id);
-      });
-    });
-
-    this.playlist = playlist.reverse();
+  selectPlaylist(playlist) {
+    this.playlist = this.playlists[playlist].tracks;
+    if (this.howl) this.howl.stop();
+    if (this.playlists[playlist].autoShuffle) this.shuffle();
     this.play(this.tracks[this.playlist[0]]);
-  }
-
-  selectArtist(artist) {
-    const playlist = [];
-
-    this.releases.forEach((release) => {
-      if (release.artist.code === artist
-          || (release.andArtist && release.andArtist.code === artist)) {
-        release.tracks.forEach((track) => {
-          if (track.webm && track.m4a && track.mp3) playlist.push(track.id);
-        });
-      }
-    });
-
-    if (playlist.length > 0) {
-      this.playlist = playlist.reverse();
-      this.play(this.tracks[this.playlist[0]]);
-    }
-  }
-
-  selectTag(tag) {
-    const playlist = [];
-
-    this.releases.forEach((release) => {
-      if (release.tagList.indexOf(tag) > -1) {
-        release.tracks.forEach((track) => {
-          if (track.webm && track.m4a && track.mp3) playlist.push(track.id);
-        });
-      }
-    });
-
-    if (playlist.length > 0) {
-      if (this.howl) this.howl.stop();
-      this.playlist = playlist.reverse();
-      this.shuffle();
-      this.play(this.tracks[this.playlist[0]]);
-    }
   }
 
   shuffle() {

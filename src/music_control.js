@@ -31,25 +31,13 @@ const playerHtml = `
         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
           <span class="fa fa-fw fa-list"></span></a>
         <div id="playbox" class="dropdown-menu p-0">
-          Select Playlist:
-          <select id="playsel">
-            <option value="all">All Releases</option>
-            <option value="electronic">Shuffle Electronic</option>
-            <option value="rap">Shuffle Rap</option>
-            <option value="hrd">HRD</option>
-            <option value="kQ">Keegan Quinn</option>
-            <option value="str1ng">str1ng</option>
-            <option value="wabisabi">Wabi$abi</option>
-          </select>
+          Select Playlist: <select id="playsel"></select>
 
           <table class="table table-bordered table-hover table-sm small">
             <thead class="thead-dark">
-              <tr>
-                <th>Track</th>
-              </tr>
+              <tr><th>Track</th></tr>
             </thead>
-            <tbody id="playlist">
-            </tbody>
+            <tbody id="playlist"></tbody>
           </table>
         </div>
       </li>
@@ -90,6 +78,7 @@ class MusicControl {
     this.elArt = null;
     this.elBox = null;
     this.elList = null;
+    this.elPlaySel = null;
     this.elTrk = null;
     this.elRel = null;
     this.elShuffle = null;
@@ -143,7 +132,7 @@ class MusicControl {
   }
 
   load() {
-    if (!this.player.playlist) return;
+    if (!this.player.track) return;
 
     // Enable font-awesome glyphs
     library.add(
@@ -165,6 +154,7 @@ class MusicControl {
     if (!this.elArt) this.elArt = document.getElementById('playart');
     if (!this.elBox) this.elBox = document.getElementById('playbox');
     if (!this.elList) this.elList = document.getElementById('playlist');
+    if (!this.elPlaySel) this.elPlaySel = document.getElementById('playsel');
     if (!this.elTrk) this.elTrk = document.getElementById('playtrk');
     if (!this.elRel) this.elRel = document.getElementById('playrel');
     if (!this.elShuffle) {
@@ -231,22 +221,8 @@ class MusicControl {
       });
     });
 
-    const elPlaySel = document.getElementById('playsel');
-    elPlaySel.addEventListener('change', () => {
-      switch (elPlaySel.value) {
-        case 'electronic':
-        case 'rap':
-          this.player.selectTag(elPlaySel.value);
-          break;
-        case 'hrd':
-        case 'kQ':
-        case 'str1ng':
-        case 'wabisabi':
-          this.player.selectArtist(elPlaySel.value);
-          break;
-        default:
-          this.player.resetPlaylist();
-      }
+    this.elPlaySel.addEventListener('change', () => {
+      this.player.selectPlaylist(parseInt(this.elPlaySel.value, 10));
     });
 
     this.elPlayer.style.display = 'block';
@@ -309,6 +285,12 @@ class MusicControl {
         elTrack.className = 'track loaded';
       }
     });
+
+    const opts = [];
+    this.player.playlists.forEach((playlist) => {
+      opts.push(`<option value="${playlist.id}">${playlist.title}</option>`);
+    });
+    this.elPlaySel.innerHTML = opts.join('');
 
     const rows = [];
     this.player.playlist.forEach((trackId) => {

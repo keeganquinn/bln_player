@@ -27,6 +27,14 @@ const releases = [{
   }],
 }];
 
+const playlists = [{
+  id: 1,
+  code: 'all',
+  title: 'All Releases',
+  autoShuffle: false,
+  tracks: [1, 2],
+}];
+
 describe('MusicControl', () => {
   let musicControl;
   beforeEach(() => {
@@ -42,7 +50,8 @@ describe('MusicControl', () => {
       document.body.innerHTML = page;
       musicControl.start();
       musicControl.player.loadReleases(releases);
-      musicControl.load();
+      musicControl.player.loadPlaylists(playlists);
+      musicControl.player.ready();
     });
 
     it('has references', () => {
@@ -128,7 +137,8 @@ describe('MusicControl', () => {
       document.body.innerHTML = page;
       musicControl.start();
       musicControl.player.loadReleases(releases);
-      musicControl.load();
+      musicControl.player.loadPlaylists(playlists);
+      musicControl.player.ready();
     });
 
     it('volume is hidden', () => {

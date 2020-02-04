@@ -18,6 +18,14 @@ const releases = [{
   }],
 }];
 
+const playlists = [{
+  id: 1,
+  code: 'all',
+  title: 'All Releases',
+  autoShuffle: false,
+  tracks: [1, 2],
+}];
+
 describe('BlnPlayer', () => {
   let blnPlayer;
   beforeEach(() => {
@@ -25,12 +33,14 @@ describe('BlnPlayer', () => {
   });
 
   it('is not ready until loaded', () => {
-    expect(blnPlayer.releases).toBeFalsy();
+    expect(blnPlayer.track).toBeFalsy();
   });
 
   describe('loaded', () => {
     beforeEach(() => {
       blnPlayer.loadReleases(releases);
+      blnPlayer.loadPlaylists(playlists);
+      blnPlayer.ready();
     });
 
     it('parses release information', () => {
