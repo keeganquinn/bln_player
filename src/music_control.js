@@ -16,13 +16,13 @@ const playerCls = 'navbar navbar-dark navbar-expand bg-secondary fixed-bottom';
 const playerHtml = `
   <div class="container">
     <div>
-      <div class="row d-none d-sm-flex" id="playdisplay">
+      <div class="row d-none d-sm-flex" id="player_display">
         <div>
-          <div id="playart"><span class="fa fa-fw fa-music"></span></div>
+          <div id="player_art"><span class="fa fa-fw fa-music"></span></div>
         </div>
         <div class="pl-4">
-          <div class="row" id="playtrk"></div>
-          <div class="row" id="playrel"></div>
+          <div class="row" id="player_trk"></div>
+          <div class="row" id="player_rel"></div>
         </div>
       </div>
     </div>
@@ -30,34 +30,35 @@ const playerHtml = `
       <li class="nav-item dropup">
         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
           <span class="fa fa-fw fa-list"></span></a>
-        <div id="playbox" class="dropdown-menu p-0">
-          Select Playlist: <select id="playsel"></select>
+        <div id="player_box" class="dropdown-menu p-0">
+          Select Playlist: <select id="player_sel"></select>
 
           <table class="table table-bordered table-hover table-sm small">
             <thead class="thead-dark">
               <tr><th>Track</th></tr>
             </thead>
-            <tbody id="playlist"></tbody>
+            <tbody id="player_list"></tbody>
           </table>
         </div>
       </li>
       <li class="nav-item">
-        <a id="shuffle" href="#" class="nav-link">
+        <a id="player_shuffle" href="#" class="nav-link">
           <span class="fa fa-fw fa-random"></span></a></li>
       <li class="nav-item">
-        <a id="prev" href="#" class="nav-link">
+        <a id="player_prev" href="#" class="nav-link">
           <span class="fa fa-fw fa-lg fa-backward"></span></a></li>
       <li class="nav-item">
-        <a id="pause" href="#" class="nav-link">
+        <a id="player_pause" href="#" class="nav-link">
           <span class="fa fa-fw fa-lg fa-play"></span></a></li>
       <li class="nav-item">
-        <a id="next" href="#" class="nav-link">
+        <a id="player_next" href="#" class="nav-link">
           <span class="fa fa-fw fa-lg fa-forward"></span></a></li>
-      <li class="nav-item dropup" id="volgrp">
+      <li class="nav-item dropup" id="player_vgrp">
         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
           <span class="fa fa-fw fa-volume-up"></span></a>
         <div class="dropdown-menu bg-secondary p-1">
-          <div id="vol" class="noUi-target noUi-rtl noUi-vertical"></div>
+          <div id="player_vol" class="noUi-target noUi-rtl noUi-vertical">
+          </div>
         </div>
       </li>
     </ul>
@@ -78,7 +79,7 @@ class MusicControl {
     this.elArt = null;
     this.elBox = null;
     this.elList = null;
-    this.elPlaySel = null;
+    this.elSel = null;
     this.elTrk = null;
     this.elRel = null;
     this.elShuffle = null;
@@ -151,29 +152,30 @@ class MusicControl {
     }
     document.body.appendChild(this.elPlayer);
 
-    if (!this.elArt) this.elArt = document.getElementById('playart');
-    if (!this.elBox) this.elBox = document.getElementById('playbox');
-    if (!this.elList) this.elList = document.getElementById('playlist');
-    if (!this.elPlaySel) this.elPlaySel = document.getElementById('playsel');
-    if (!this.elTrk) this.elTrk = document.getElementById('playtrk');
-    if (!this.elRel) this.elRel = document.getElementById('playrel');
+    if (!this.elArt) this.elArt = document.getElementById('player_art');
+    if (!this.elBox) this.elBox = document.getElementById('player_box');
+    if (!this.elList) this.elList = document.getElementById('player_list');
+    if (!this.elSel) this.elSel = document.getElementById('player_sel');
+    if (!this.elTrk) this.elTrk = document.getElementById('player_trk');
+    if (!this.elRel) this.elRel = document.getElementById('player_rel');
+
     if (!this.elShuffle) {
-      this.elShuffle = document.getElementById('shuffle');
+      this.elShuffle = document.getElementById('player_shuffle');
       this.elShuffle.addEventListener('click', this.musicShuffle.bind(this));
     }
     if (!this.elPrev) {
-      this.elPrev = document.getElementById('prev');
+      this.elPrev = document.getElementById('player_prev');
       this.elPrev.addEventListener('click', this.musicPrev.bind(this));
     }
     if (!this.elPause) {
-      this.elPause = document.getElementById('pause');
+      this.elPause = document.getElementById('player_pause');
       this.elPause.addEventListener('click', this.musicPause.bind(this));
     }
     if (!this.elNext) {
-      this.elNext = document.getElementById('next');
+      this.elNext = document.getElementById('player_next');
       this.elNext.addEventListener('click', this.musicNext.bind(this));
     }
-    if (!this.elVolGrp) this.elVolGrp = document.getElementById('volgrp');
+    if (!this.elVolGrp) this.elVolGrp = document.getElementById('player_vgrp');
     if (!this.elVolSel) this.elVolSel = this.elVolGrp.firstElementChild;
     if (!this.elVol) this.volumeLoad();
 
@@ -221,8 +223,8 @@ class MusicControl {
       });
     });
 
-    this.elPlaySel.addEventListener('change', () => {
-      this.player.selectPlaylist(parseInt(this.elPlaySel.value, 10));
+    this.elSel.addEventListener('change', () => {
+      this.player.selectPlaylist(parseInt(this.elSel.value, 10));
     });
 
     this.elPlayer.style.display = 'block';
@@ -241,7 +243,7 @@ class MusicControl {
     else vol = 100;
     this.volumeApply(vol);
 
-    this.elVol = document.getElementById('vol');
+    this.elVol = document.getElementById('player_vol');
     this.elVol.parentElement.style.minWidth = '18px';
     this.elVol.style.height = '10em';
     noUiSlider.create(this.elVol, {
@@ -290,7 +292,7 @@ class MusicControl {
     this.player.playlists.forEach((playlist) => {
       opts.push(`<option value="${playlist.id}">${playlist.title}</option>`);
     });
-    this.elPlaySel.innerHTML = opts.join('');
+    this.elSel.innerHTML = opts.join('');
 
     const rows = [];
     this.player.playlist.forEach((trackId) => {
