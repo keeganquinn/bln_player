@@ -321,7 +321,13 @@ class MusicControl {
     const trs = Array.from(this.elList.getElementsByTagName('tr'));
     trs.forEach((elTr) => {
       const aTrack = this.player.tracks[elTr.dataset.id];
-      elTr.addEventListener('click', () => this.player.play(aTrack));
+      elTr.addEventListener('click', () => {
+        if (MusicControl.elPlaylist) {
+          const playlistId = parseInt(MusicControl.elPlaylist.dataset.id, 10);
+          this.player.selectPlaylist(playlistId);
+        }
+        this.player.play(aTrack);
+      });
     });
 
     this.elArt.style.height = '40px';
