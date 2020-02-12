@@ -100,7 +100,9 @@ class BlnPlayer {
     this.playlist = this.playlists[playlistId].tracks;
     if (this.howl) this.howl.stop();
     if (this.playlists[playlistId].autoShuffle) this.shuffle();
+
     this.track = this.tracks[this.playlist[0]];
+    this.howl = null;
   }
 
   shuffle() {

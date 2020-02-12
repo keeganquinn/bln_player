@@ -209,10 +209,7 @@ class MusicControl {
       });
     }
 
-    if (MusicControl.elPlaylist && !this.player.isPlaying) {
-      const playlistId = parseInt(MusicControl.elPlaylist.dataset.id, 10);
-      this.player.selectPlaylist(playlistId);
-    }
+    if (!this.player.isPlaying) this.activatePlaylist();
 
     MusicControl.elTracks.forEach((item) => {
       const elTrack = item;
@@ -243,6 +240,13 @@ class MusicControl {
 
     this.elPlayer.style.display = 'block';
     this.refresh();
+  }
+
+  activatePlaylist() {
+    if (MusicControl.elPlaylist) {
+      const playlistId = parseInt(MusicControl.elPlaylist.dataset.id, 10);
+      this.player.selectPlaylist(playlistId);
+    }
   }
 
   volumeLoad() {
@@ -322,10 +326,7 @@ class MusicControl {
     trs.forEach((elTr) => {
       const aTrack = this.player.tracks[elTr.dataset.id];
       elTr.addEventListener('click', () => {
-        if (MusicControl.elPlaylist) {
-          const playlistId = parseInt(MusicControl.elPlaylist.dataset.id, 10);
-          this.player.selectPlaylist(playlistId);
-        }
+        this.activatePlaylist();
         this.player.play(aTrack);
       });
     });
