@@ -126,6 +126,13 @@ class MusicControl {
   }
 
   /**
+   * Locate playlist elements in the current page.
+   */
+  static get elPlaylist() {
+    return document.getElementById('playlist');
+  }
+
+  /**
    * Locate track elements in the current page.
    */
   static get elTracks() {
@@ -200,6 +207,11 @@ class MusicControl {
         fadeColor: 'transparent',
         shadow: '0 0 1px transparent',
       });
+    }
+
+    if (MusicControl.elPlaylist && !this.player.isPlaying) {
+      const playlistId = parseInt(MusicControl.elPlaylist.dataset.id, 10);
+      this.player.selectPlaylist(playlistId);
     }
 
     MusicControl.elTracks.forEach((item) => {
