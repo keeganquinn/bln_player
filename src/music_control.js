@@ -236,7 +236,9 @@ class MusicControl {
     });
 
     this.elSel.addEventListener('change', () => {
-      this.player.selectPlaylist(parseInt(this.elSel.value, 10));
+      const playlistId = parseInt(this.elSel.value, 10);
+      this.player.selectPlaylist(playlistId);
+      this.player.play(this.player.track);
     });
 
     this.elPlayer.style.display = 'block';

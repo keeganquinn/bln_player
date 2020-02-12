@@ -96,11 +96,11 @@ class BlnPlayer {
     if (this.autoPlay) this.pause();
   }
 
-  selectPlaylist(playlist) {
-    this.playlist = this.playlists[playlist].tracks;
+  selectPlaylist(playlistId) {
+    this.playlist = this.playlists[playlistId].tracks;
     if (this.howl) this.howl.stop();
-    if (this.playlists[playlist].autoShuffle) this.shuffle();
-    this.play(this.tracks[this.playlist[0]]);
+    if (this.playlists[playlistId].autoShuffle) this.shuffle();
+    this.track = this.tracks[this.playlist[0]];
   }
 
   shuffle() {
