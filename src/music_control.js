@@ -311,7 +311,9 @@ class MusicControl {
 
     const opts = [];
     this.player.playlists.forEach((playlist) => {
-      opts.push(`<option value="${playlist.id}">${playlist.title}</option>`);
+      if (playlist.active) {
+        opts.push(`<option value="${playlist.id}">${playlist.title}</option>`);
+      }
     });
     this.elSel.innerHTML = opts.join('');
 
