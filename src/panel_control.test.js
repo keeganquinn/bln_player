@@ -29,7 +29,9 @@ const playlists = [{
 describe('PanelControl', () => {
   let panelControl;
   beforeEach(() => {
-    panelControl = new PanelControl();
+    panelControl = new PanelControl({
+      eventsUrl: 'https://basslines-staging.quinn.tk/ahoy/events',
+    });
   });
 
   it('is not ready until loaded', () => {

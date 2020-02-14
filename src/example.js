@@ -16,6 +16,7 @@ const html = `
 function startMusicControl(event) {
   const musicControl = new MusicControl({
     apiKey: 'example_MusicControl',
+    eventsUrl: 'https://basslines-staging.quinn.tk/ahoy/events',
   });
   musicControl.start();
   musicControl.load();
@@ -34,6 +35,7 @@ function startPanelControl(event) {
     defaultPlaylist: 'electronic',
     defaultVol: 50,
     elTarget: elPanelTarget,
+    eventsUrl: 'https://basslines-staging.quinn.tk/ahoy/events',
   });
   panelControl.start();
   panelControl.load();
