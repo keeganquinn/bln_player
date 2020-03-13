@@ -19,7 +19,10 @@
     "test": "jest --coverage"
   },
   "files": [
-    "dist/main.js"
+    "dist/main.js",
+    "src/bln_player.js",
+    "src/music_control.js",
+    "src/panel_control.js"
   ],
   "keywords": [
     "basslin.es",
