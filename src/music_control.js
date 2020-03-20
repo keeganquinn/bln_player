@@ -320,6 +320,8 @@ class MusicControl {
     const rows = [];
     this.player.playlist.forEach((trackId) => {
       const aTrack = this.player.tracks[trackId];
+      if (!aTrack) return;
+
       let kls = '';
       if (track.id === aTrack.id) kls = 'class="table-active"';
       rows.push(`<tr data-id="${aTrack.id}" ${kls}><td>`
