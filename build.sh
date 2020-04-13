@@ -4,18 +4,18 @@
 
 set -ex
 
-yarn install --frozen-lockfile
+npm install --frozen-lockfile
 
 
-yarn -s clean
-yarn -s prepack
+npm -s run clean
+npm -s run prepack
 
-yarn -s test || true
-yarn -s jsdoc || true
-yarn -s jsonlint || true
-yarn -s pkglint || true
+npm -s test || true
+npm -s run jsdoc || true
+npm -s run jsonlint || true
+npm -s run pkglint || true
 
-yarn -s lint --format node_modules/eslint-formatter-checkstyle-* \
-     > checkstyle-eslint.xml || true
+npm -s run lint -- --format node_modules/eslint-formatter-checkstyle-* \
+    > checkstyle-eslint.xml || true
 
 exit 0
