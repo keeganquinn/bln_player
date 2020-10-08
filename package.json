@@ -5,7 +5,7 @@
   "homepage": "https://github.com/keeganquinn/bln_player",
   "bugs": "https://github.com/keeganquinn/bln_player/issues",
   "license": "MIT",
-  "author": "Keegan Quinn <keegan@quinn.tk>",
+  "author": "Keegan Quinn <keegan@qtk.io>",
   "repository": "https://github.com/keeganquinn/bln_player.git",
   "main": "dist/main.js",
   "scripts": {
