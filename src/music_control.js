@@ -10,7 +10,7 @@ const Cookies = require('js-cookie');
 const noUiSlider = require('nouislider');
 
 require('spin.js/spin.css');
-require('nouislider/distribute/nouislider.css');
+require('nouislider/dist/nouislider.css');
 
 const playerCls = 'navbar navbar-dark navbar-expand bg-secondary fixed-bottom';
 const playerHtml = `
