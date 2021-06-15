@@ -19,6 +19,7 @@ module.exports = {
   roots: [
     'src',
   ],
+  testEnvironment: 'jsdom',
   transformIgnorePatterns: [
     'node_modules/?!(spin.js)',
   ],

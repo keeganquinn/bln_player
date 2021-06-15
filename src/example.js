@@ -1,7 +1,6 @@
 import { MusicControl, PanelControl } from './index';
 
-require('bootstrap/dist/css/bootstrap.css');
-require('bootstrap/dist/js/bootstrap.js');
+import { Button, Dropdown } from 'bootstrap';
 
 const html = `
   <div class="container p-3">

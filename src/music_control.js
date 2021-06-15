@@ -15,20 +15,18 @@ require('nouislider/dist/nouislider.css');
 const playerCls = 'navbar navbar-dark navbar-expand bg-secondary fixed-bottom';
 const playerHtml = `
   <div class="container">
-    <div>
-      <div class="row d-none d-sm-flex" id="player_display">
+      <div class="d-none d-sm-flex" id="player_display">
         <div>
           <div id="player_art"><span class="fa fa-fw fa-music"></span></div>
         </div>
-        <div class="pl-4">
-          <div class="row" id="player_trk"></div>
-          <div class="row" id="player_rel"></div>
+        <div class="ps-3">
+          <div id="player_trk"></div>
+          <div id="player_rel"></div>
         </div>
       </div>
-    </div>
     <ul class="navbar-nav">
       <li class="nav-item dropup">
-        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
           <span class="fa fa-fw fa-list"></span></a>
         <div id="player_box" class="dropdown-menu p-0">
           Select Playlist: <select id="player_sel"></select>
@@ -54,7 +52,7 @@ const playerHtml = `
         <a id="player_next" href="#" class="nav-link">
           <span class="fa fa-fw fa-lg fa-forward"></span></a></li>
       <li class="nav-item dropup" id="player_vgrp">
-        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
           <span class="fa fa-fw fa-volume-up"></span></a>
         <div class="dropdown-menu bg-secondary p-1">
           <div id="player_vol" class="noUi-target noUi-rtl noUi-vertical">
