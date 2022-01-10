@@ -15,6 +15,9 @@ const pluginProposalClassProperties = require(
 const pluginProposalObjectRestSpread = require(
   '@babel/plugin-proposal-object-rest-spread',
 );
+const pluginProposalPrivatePropertyInObject = require(
+  '@babel/plugin-proposal-private-property-in-object',
+);
 const pluginTransformRuntime = require(
   '@babel/plugin-transform-runtime',
 );
@@ -75,6 +78,12 @@ module.exports = (api) => {
         pluginProposalObjectRestSpread.default,
         {
           useBuiltIns: true,
+        },
+      ],
+      [
+        pluginProposalPrivatePropertyInObject.default,
+        {
+          loose: true,
         },
       ],
       [
