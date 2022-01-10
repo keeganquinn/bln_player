@@ -1,7 +1,5 @@
 import { MusicControl, PanelControl } from './index';
 
-import { Button, Dropdown } from 'bootstrap';
-
 const html = `
   <div class="container p-3">
     <a href="#" class="btn btn-secondary" id="startMusicControl">

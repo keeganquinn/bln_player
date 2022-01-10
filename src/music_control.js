@@ -142,8 +142,18 @@ class MusicControl {
 
     // Enable font-awesome glyphs
     library.add(
-      faBackward, faForward, faGripHorizontal, faList, faMusic, faPause,
-      faPlay, faRandom, faVolumeDown, faVolumeMute, faVolumeOff, faVolumeUp,
+      faBackward,
+      faForward,
+      faGripHorizontal,
+      faList,
+      faMusic,
+      faPause,
+      faPlay,
+      faRandom,
+      faVolumeDown,
+      faVolumeMute,
+      faVolumeOff,
+      faVolumeUp,
     );
     dom.watch();
 

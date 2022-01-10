@@ -85,8 +85,17 @@ class PanelControl {
 
     // Enable font-awesome glyphs
     library.add(
-      faBackward, faForward, faList, faMusic, faPause, faPlay, faRandom,
-      faVolumeDown, faVolumeMute, faVolumeOff, faVolumeUp,
+      faBackward,
+      faForward,
+      faList,
+      faMusic,
+      faPause,
+      faPlay,
+      faRandom,
+      faVolumeDown,
+      faVolumeMute,
+      faVolumeOff,
+      faVolumeUp,
     );
     dom.watch();
 
