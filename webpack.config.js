@@ -1,6 +1,7 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const HtmlWebpackTagsPlugin = require('html-webpack-tags-plugin');
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
   mode: 'production',
@@ -8,7 +9,6 @@ module.exports = {
   entry: {
     example: './src/example.js',
     main: './src/index.js',
-    style: './src/style.js',
   },
   output: {
     path: path.join(__dirname, 'dist'),
@@ -17,18 +17,15 @@ module.exports = {
     libraryTarget: 'umd',
   },
   plugins: [
-    new MiniCssExtractPlugin(),
     new HtmlWebpackPlugin({
-      chunks: ['example', 'style'],
+      chunks: ['example'],
       title: 'bln_player',
     }),
+    new HtmlWebpackTagsPlugin({
+      tags: ['style.css'],
+    }),
+    new webpack.optimize.LimitChunkCountPlugin({
+      maxChunks: 1
+    }),
   ],
-  module: {
-    rules: [
-      {
-        test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader'],
-      },
-    ],
-  },
 };

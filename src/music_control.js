@@ -9,9 +9,6 @@ import BlnPlayer from './bln_player';
 const Cookies = require('js-cookie');
 const noUiSlider = require('nouislider');
 
-require('spin.js/spin.css');
-require('nouislider/dist/nouislider.css');
-
 const playerCls = 'navbar navbar-dark navbar-expand bg-secondary fixed-bottom';
 const playerHtml = `
   <div class="container">

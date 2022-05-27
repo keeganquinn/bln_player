@@ -8,8 +8,6 @@ import BlnPlayer from './bln_player';
 const Cookies = require('js-cookie');
 const noUiSlider = require('nouislider');
 
-require('nouislider/dist/nouislider.css');
-
 const playerCls = 'border border-dark m-2 p-2';
 const playerHtml = `
   <div id="bln_controls">
