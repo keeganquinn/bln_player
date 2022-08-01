@@ -4,10 +4,8 @@
     "jest": true,
     "node": true
   },
-  "extends": "airbnb-base",
-  "rules": {
-    "import/extensions": "off",
-    "import/no-extraneous-dependencies": "off",
-    "import/no-unresolved": "off"
-  }
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "root": true
 }
