@@ -36,7 +36,7 @@ const playlists = [{
 }];
 
 describe('MusicControl', () => {
-  let musicControl;
+  let musicControl: MusicControl;
   beforeEach(() => {
     musicControl = new MusicControl({
       eventsUrl: 'https://basslines-staging.quinn.tk/ahoy/events',

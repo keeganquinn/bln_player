@@ -1,7 +1,7 @@
 import PanelControl from './panel_control';
 
 window.HTMLMediaElement.prototype.load = () => { /* do nothing */ };
-window.HTMLMediaElement.prototype.play = () => { /* do nothing */ };
+window.HTMLMediaElement.prototype.play = async () => { /* do nothing */ };
 
 const releases = [{
   title: 'Release Title',
@@ -27,7 +27,7 @@ const playlists = [{
 }];
 
 describe('PanelControl', () => {
-  let panelControl;
+  let panelControl: PanelControl;
   beforeEach(() => {
     panelControl = new PanelControl({
       eventsUrl: 'https://basslines-staging.quinn.tk/ahoy/events',

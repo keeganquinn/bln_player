@@ -1,6 +1,6 @@
 import { Howl } from 'howler';
 
-const log = require('loglevel');
+import log from 'loglevel';
 
 /** Play music published by basslin.es records. */
 class BlnPlayer {

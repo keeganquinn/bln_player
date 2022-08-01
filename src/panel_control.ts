@@ -5,8 +5,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import BlnPlayer from './bln_player';
 
-const Cookies = require('js-cookie');
-const noUiSlider = require('nouislider');
+import Cookies from 'js-cookie';
+import noUiSlider from 'nouislider';
 
 const playerCls = 'border border-dark m-2 p-2';
 const playerHtml = `
@@ -30,51 +30,56 @@ const playerHtml = `
   </div>
 `;
 
+interface PanelControlOptions {
+  apiKey: string;
+  apiSecret: string;
+  autoLoop: boolean;
+  autoPlay: boolean;
+  autoShuffle: boolean;
+  defaultPlaylist: string;
+  defaultVol: number;
+  eventsUrl: string;
+  html5: boolean;
+  elTarget: Element;
+  sourceUrl: string;
+}
+
 class PanelControl {
-  constructor(opts) {
-    const o = opts || {};
+  elTarget: Element | null | undefined;
+  elPlayer: Element | null | undefined;
+  elCover: Element | null | undefined;
+  elTrack: Element | null | undefined;
+  elRelease: Element | null | undefined;
+  elPrev: Element | null | undefined;
+  elPause: Element | null | undefined;
+  elNext: Element | null | undefined;
+  elShuffle: Element | null | undefined;
+  elVol: Element | null | undefined;
 
-    this.apiKey = o.apiKey;
-    this.apiSecret = o.apiSecret;
-    this.autoLoop = o.autoLoop;
-    this.autoPlay = o.autoPlay;
-    this.autoShuffle = o.autoShuffle;
-    this.defaultPlaylist = o.defaultPlaylist;
-    this.defaultVol = o.defaultVol || 100;
-    this.eventsUrl = o.eventsUrl;
-    this.html5 = o.html5;
-    this.elTarget = o.elTarget;
-    this.sourceUrl = o.sourceUrl;
+  player: BlnPlayer;
+  defaultVol: number;
 
-    this.elPlayer = null;
-    this.elCover = null;
-    this.elTrack = null;
-    this.elRelease = null;
-    this.elPrev = null;
-    this.elPause = null;
-    this.elNext = null;
-    this.elShuffle = null;
-    this.elVol = null;
+  constructor(opts: PanelControlOptions) {
+    this.defaultVol = opts.defaultVol || 100;
+    this.elTarget = opts.elTarget;
 
-    this.player = null;
-  }
-
-  start() {
     this.player = new BlnPlayer({
-      apiKey: this.apiKey,
-      apiSecret: this.apiSecret,
-      autoLoop: this.autoLoop,
-      autoPlay: this.autoPlay,
-      autoShuffle: this.autoShuffle,
-      defaultPlaylist: this.defaultPlaylist,
-      eventsUrl: this.eventsUrl,
-      html5: this.html5,
+      apiKey: opts.apiKey,
+      apiSecret: opts.apiSecret,
+      autoLoop: opts.autoLoop,
+      autoPlay: opts.autoPlay,
+      autoShuffle: opts.autoShuffle,
+      defaultPlaylist: opts.defaultPlaylist,
+      eventsUrl: opts.eventsUrl,
+      html5: opts.html5,
       onLoad: this.load.bind(this),
       onPlay: this.refresh.bind(this),
       onUpdate: this.refresh.bind(this),
-      sourceUrl: this.sourceUrl,
+      sourceUrl: opts.sourceUrl,
     });
+  }
 
+  start() {
     this.player.load();
   }
 

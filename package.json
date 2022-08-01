@@ -11,10 +11,11 @@
   "scripts": {
     "build": "tsc",
     "build:css": "sass ./src/style.scss ./dist/style.css --no-source-map --load-path=node_modules",
+    "build:html": "ncp ./src/index.html ./dist/index.html",
     "clean": "rimraf *.xml coverage-js dist jsdoc",
     "lint": "eslint src *.ts",
     "doc": "jsdoc -c .jsdoc.json",
-    "prepack": "npm run build && npm run build:css",
+    "prepack": "npm run build && npm run build:css && npm run build:html",
     "server": "ws -d dist -f dev",
     "test": "jest --coverage"
   },
@@ -55,6 +56,7 @@
     "jsdoc-plugin-typescript": "^2.1.1",
     "local-web-server": "^5.1.1",
     "loglevel": "^1.6.7",
+    "ncp": "^2.0.0",
     "nouislider": "^15.1.0",
     "rimraf": "^3.0.2",
     "sass": "^1.52.1",
