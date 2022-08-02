@@ -12,9 +12,9 @@
     "build": "tsc",
     "build:css": "sass ./src/style.scss ./dist/style.css --no-source-map --load-path=node_modules",
     "build:html": "ncp ./src/index.html ./dist/index.html",
-    "clean": "rimraf *.xml coverage-js dist jsdoc",
+    "clean": "rimraf *.xml coverage-js dist docs",
     "lint": "eslint src",
-    "doc": "jsdoc -c .jsdoc.json",
+    "doc": "typedoc src/index.ts",
     "prepack": "npm run build && npm run build:css && npm run build:html",
     "server": "ws -d dist -f dev",
     "test": "jest --coverage"
@@ -59,8 +59,6 @@
     "jest-environment-jsdom": "^28.1.0",
     "jest-junit": "^14.0.0",
     "js-cookie": "^3.0.1",
-    "jsdoc": "^3.6.4",
-    "jsdoc-plugin-typescript": "^2.1.1",
     "local-web-server": "^5.1.1",
     "loglevel": "^1.6.7",
     "ncp": "^2.0.0",
@@ -70,6 +68,7 @@
     "spin.js": "^4.1.0",
     "ts-jest": "^28.0.7",
     "ts-node": "^10.9.1",
+    "typedoc": "^0.23.10",
     "typescript": "^4.7.4"
   }
 }
