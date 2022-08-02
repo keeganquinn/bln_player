@@ -94,15 +94,15 @@ class MusicControl {
     const o = opts || {};
 
     this.player = new BlnPlayer({
-      apiKey: opts.apiKey,
-      apiSecret: opts.apiSecret,
+      apiKey: o.apiKey,
+      apiSecret: o.apiSecret,
       autoLoop: true,
-      eventsUrl: opts.eventsUrl,
+      eventsUrl: o.eventsUrl,
       html5: !this.isAndroid,
       onLoad: this.load.bind(this),
       onPlay: this.refresh.bind(this),
       onUpdate: this.refresh.bind(this),
-      sourceUrl: opts.sourceUrl,
+      sourceUrl: o.sourceUrl,
     });
 
     this.spinner = new Spinner({
