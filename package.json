@@ -21,9 +21,13 @@
   },
   "files": [
     "dist/index.js",
+    "dist/index.d.ts",
     "dist/bln_player.js",
+    "dist/bln_player.d.ts",
     "dist/music_control.js",
-    "dist/panel_control.js"
+    "dist/music_control.d.ts",
+    "dist/panel_control.js",
+    "dist/panel_control.d.ts"
   ],
   "keywords": [
     "basslin.es",
