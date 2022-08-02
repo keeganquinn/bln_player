@@ -31,51 +31,53 @@ const playerHtml = `
 `;
 
 interface PanelControlOptions {
-  apiKey: string;
-  apiSecret: string;
-  autoLoop: boolean;
-  autoPlay: boolean;
-  autoShuffle: boolean;
-  defaultPlaylist: string;
-  defaultVol: number;
-  eventsUrl: string;
-  html5: boolean;
-  elTarget: Element;
-  sourceUrl: string;
+  apiKey?: string;
+  apiSecret?: string;
+  autoLoop?: boolean;
+  autoPlay?: boolean;
+  autoShuffle?: boolean;
+  defaultPlaylist?: string;
+  defaultVol?: number;
+  eventsUrl?: string;
+  html5?: boolean;
+  elTarget?: HTMLElement;
+  sourceUrl?: string;
 }
 
 class PanelControl {
-  elTarget: Element | null | undefined;
-  elPlayer: Element | null | undefined;
-  elCover: Element | null | undefined;
-  elTrack: Element | null | undefined;
-  elRelease: Element | null | undefined;
-  elPrev: Element | null | undefined;
-  elPause: Element | null | undefined;
-  elNext: Element | null | undefined;
-  elShuffle: Element | null | undefined;
-  elVol: Element | null | undefined;
+  elTarget: HTMLElement | null | undefined;
+  elPlayer: HTMLElement | null | undefined;
+  elCover: HTMLElement | null | undefined;
+  elTrack: HTMLElement | null | undefined;
+  elRelease: HTMLElement | null | undefined;
+  elPrev: HTMLElement | null | undefined;
+  elPause: HTMLElement | null | undefined;
+  elNext: HTMLElement | null | undefined;
+  elShuffle: HTMLElement | null | undefined;
+  elVol: HTMLElement | null | undefined;
 
   player: BlnPlayer;
   defaultVol: number;
 
   constructor(opts: PanelControlOptions) {
-    this.defaultVol = opts.defaultVol || 100;
-    this.elTarget = opts.elTarget;
+    const o = opts || {};
+
+    this.defaultVol = o.defaultVol || 100;
+    this.elTarget = o.elTarget || null;
 
     this.player = new BlnPlayer({
-      apiKey: opts.apiKey,
-      apiSecret: opts.apiSecret,
-      autoLoop: opts.autoLoop,
-      autoPlay: opts.autoPlay,
-      autoShuffle: opts.autoShuffle,
-      defaultPlaylist: opts.defaultPlaylist,
-      eventsUrl: opts.eventsUrl,
-      html5: opts.html5,
+      apiKey: o.apiKey,
+      apiSecret: o.apiSecret,
+      autoLoop: o.autoLoop,
+      autoPlay: o.autoPlay,
+      autoShuffle: o.autoShuffle,
+      defaultPlaylist: o.defaultPlaylist,
+      eventsUrl: o.eventsUrl,
+      html5: o.html5,
       onLoad: this.load.bind(this),
       onPlay: this.refresh.bind(this),
       onUpdate: this.refresh.bind(this),
-      sourceUrl: opts.sourceUrl,
+      sourceUrl: o.sourceUrl,
     });
   }
 
@@ -123,18 +125,29 @@ class PanelControl {
 
     if (!this.elPrev) {
       this.elPrev = document.getElementById('bln_prev');
+    }
+    if (this.elPrev) {
       this.elPrev.addEventListener('click', this.prev.bind(this));
     }
+
     if (!this.elPause) {
       this.elPause = document.getElementById('bln_pause');
+    }
+    if (this.elPause) {
       this.elPause.addEventListener('click', this.pause.bind(this));
     }
+
     if (!this.elNext) {
       this.elNext = document.getElementById('bln_next');
+    }
+    if (this.elNext) {
       this.elNext.addEventListener('click', this.next.bind(this));
     }
+
     if (!this.elShuffle) {
       this.elShuffle = document.getElementById('bln_shuffle');
+    }
+    if (this.elShuffle) {
       this.elShuffle.addEventListener('click', this.shuffle.bind(this));
     }
 
@@ -145,29 +158,35 @@ class PanelControl {
   }
 
   volumeLoad() {
-    let vol = Cookies.get('bln_volume');
-    if (vol) vol = parseInt(vol, 10);
+    const volCookie = Cookies.get('bln_volume');
+    let vol;
+
+    if (volCookie) vol = parseInt(volCookie, 10);
     else vol = this.defaultVol;
     this.player.volume(vol * 0.01);
 
     this.elVol = document.getElementById('bln_volume');
-    this.elVol.style.width = '10em';
-    noUiSlider.create(this.elVol, {
-      start: [vol],
-      connect: [true, false],
-      orientation: 'horizontal',
-      direction: 'ltr',
-      range: {
-        min: 0,
-        max: 100,
-      },
-    });
-    this.elVol.noUiSlider.on('set', this.volumeSet.bind(this));
+    if (this.elVol) {
+      this.elVol.style.width = '10em';
+      const slider = noUiSlider.create(this.elVol, {
+        start: [vol],
+        connect: [true, false],
+        orientation: 'horizontal',
+        direction: 'ltr',
+        range: {
+          min: 0,
+          max: 100,
+        },
+      });
+      slider.on('set', this.volumeSet.bind(this));
+    }
   }
 
-  volumeSet(values, handle) {
-    const vol = parseInt(values[handle], 10);
-    Cookies.set('bln_volume', vol);
+  volumeSet(values: (string | number)[], handle: number) {
+    const volCookie = '' + values[handle];
+    Cookies.set('bln_volume', volCookie);
+
+    const vol = parseInt(volCookie, 10);
     this.player.volume(vol * 0.01);
   }
 
@@ -176,41 +195,49 @@ class PanelControl {
 
     const { track, release } = this.player;
 
-    this.elCover.innerHTML = `<a href="${release.url}" target="_blank">`
-      + `<img src="${release.image}" alt="Cover" width="38" height="38"/></a>`;
-    this.elTrack.innerHTML = track.title;
-    this.elRelease.innerHTML = `<a href="${release.url}" target="_blank">`
-      + `${track.artist} - ${release.title}</a>`;
+    if (release && this.elCover) {
+      this.elCover.innerHTML = `<a href="${release.url}" target="_blank">`
+        + `<img src="${release.image}" alt="Cover" width="38" height="38"/></a>`;
+    }
+    if (this.elTrack) {
+      this.elTrack.innerHTML = track.title;
+    }
+    if (release && this.elRelease) {
+      this.elRelease.innerHTML = `<a href="${release.url}" target="_blank">`
+        + `${track.artist} - ${release.title}</a>`;
+    }
 
-    if (this.player.isPlaying || this.player.isLoading) {
-      this.elPause.innerHTML = '<span class="fa fa-fw fa-lg fa-pause"></span>';
-    } else {
-      this.elPause.innerHTML = '<span class="fa fa-fw fa-lg fa-play"></span>';
+    if (this.elPause) {
+      if (this.player.isPlaying || this.player.isLoading) {
+        this.elPause.innerHTML = '<span class="fa fa-fw fa-lg fa-pause"></span>';
+      } else {
+        this.elPause.innerHTML = '<span class="fa fa-fw fa-lg fa-play"></span>';
+      }
     }
   }
 
-  pause(event) {
+  pause(event: Event) {
     this.player.pause();
 
     if (event) event.preventDefault();
     return false;
   }
 
-  prev(event) {
+  prev(event: Event) {
     this.player.prev();
 
     if (event) event.preventDefault();
     return false;
   }
 
-  next(event) {
+  next(event: Event) {
     this.player.next();
 
     if (event) event.preventDefault();
     return false;
   }
 
-  shuffle(event) {
+  shuffle(event: Event) {
     this.player.shuffle();
 
     if (event) event.preventDefault();

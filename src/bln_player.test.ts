@@ -1,11 +1,13 @@
 import BlnPlayer from './bln_player';
 
-window.HTMLMediaElement.prototype.load = jest.fn();
-window.HTMLMediaElement.prototype.play = jest.fn();
+window.HTMLMediaElement.prototype.load = () => { /* do nothing */ };
+window.HTMLMediaElement.prototype.play = async () => { /* do nothing */ };
 
 const releases = [{
   id: 1,
   title: 'Release Title',
+  url: 'https://basslin.es/',
+  image: 'https://basslin.es/kQ.jpg',
   tracks: [{
     id: 1,
     releaseId: 1,
@@ -29,6 +31,7 @@ const playlists = [{
   id: 1,
   code: 'all',
   title: 'All Releases',
+  active: true,
   autoShuffle: false,
   tracks: [1, 2],
 }];

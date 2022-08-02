@@ -33,6 +33,8 @@ interface Track {
 interface Release {
   id: number;
   title: string;
+  url: string;
+  image: string;
   tracks: Track[];
 }
 
@@ -40,6 +42,7 @@ interface Playlist {
   id: number;
   code: string;
   title: string;
+  active: boolean;
   autoShuffle: boolean;
   tracks: number[];
 }
@@ -212,11 +215,11 @@ class BlnPlayer {
   }
 
   get isLoading() {
-    return this.howl && this.howl.state() !== 'loaded';
+    return !!(this.howl && this.howl.state() !== 'loaded');
   }
 
   get isPlaying() {
-    return this.howl && this.howl.playing();
+    return !!(this.howl && this.howl.playing());
   }
 
   get release() {
