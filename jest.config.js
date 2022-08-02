@@ -21,7 +21,7 @@ module.exports = {
   ],
   testEnvironment: 'jsdom',
   transformIgnorePatterns: [
-    'node_modules/?!(spin.js)',
+    'node_modules/(?!spin\.js)',
   ],
   preset: 'ts-jest',
   transform: {
