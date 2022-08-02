@@ -2,35 +2,108 @@ import { Howl } from 'howler';
 
 import log from 'loglevel';
 
+type BlnPlayerCallback = () => void;
+
+interface BlnPlayerOptions {
+  apiKey?: string;
+  apiSecret?: string;
+  autoLoop?: boolean;
+  autoPlay?: boolean;
+  autoShuffle?: boolean;
+  defaultPlaylist?: string;
+  eventsUrl?: string;
+  html5?: boolean;
+  onLoad?: BlnPlayerCallback;
+  onPlay?: BlnPlayerCallback;
+  onUpdate?: BlnPlayerCallback;
+  sourceUrl?: string;
+  vol?: number;
+}
+
+interface Track {
+  id: number;
+  releaseId: number;
+  artist: string;
+  title: string;
+  m4a: string;
+  mp3: string;
+  webm: string;
+}
+
+interface Release {
+  id: number;
+  title: string;
+  tracks: Track[];
+}
+
+interface Playlist {
+  id: number;
+  code: string;
+  title: string;
+  autoShuffle: boolean;
+  tracks: number[];
+}
+
+interface DataBundle {
+  visitToken: string;
+  visitorToken: string;
+  releases: Release[];
+  playlists: Playlist[];
+}
+
 /** Play music published by basslin.es records. */
 class BlnPlayer {
+  apiKey: string;
+  apiSecret: string;
+  autoLoop: boolean;
+  autoPlay: boolean;
+  autoShuffle: boolean;
+  defaultPlaylist: string;
+  eventsUrl: string;
+  html5: boolean;
+  onLoad: BlnPlayerCallback;
+  onPlay: BlnPlayerCallback;
+  onUpdate: BlnPlayerCallback;
+  sourceUrl: string;
+  vol: number;
+
+  howl: Howl | null;
+  loop: boolean;
+  playlist: number[];
+  playlists: Playlist[];
+  releases: Release[];
+  track: Track | null;
+  tracks: Track[];
+  visitToken: string | null;
+  visitorToken: string | null;
+
   /**
    * Create a new Player.
    */
-  constructor(opts) {
+  constructor(opts: BlnPlayerOptions) {
     const o = opts || {};
 
-    this.apiKey = o.apiKey;
-    this.apiSecret = o.apiSecret;
-    this.autoLoop = o.autoLoop;
-    this.autoPlay = o.autoPlay;
-    this.autoShuffle = o.autoShuffle;
+    this.apiKey = o.apiKey || "unidentified";
+    this.apiSecret = o.apiSecret || "";
+    this.autoLoop = o.autoLoop || false;
+    this.autoPlay = o.autoPlay || false;
+    this.autoShuffle = o.autoShuffle || false;
     this.defaultPlaylist = o.defaultPlaylist || 'all';
     this.eventsUrl = o.eventsUrl || 'https://basslin.es/ahoy/events';
-    this.html5 = o.html5;
-    this.onLoad = o.onLoad;
-    this.onPlay = o.onPlay;
-    this.onUpdate = o.onUpdate;
+    this.html5 = o.html5 || false;
+    this.onLoad = o.onLoad || function () { /* do nothing */ };
+    this.onPlay = o.onPlay || function () { /* do nothing */ };
+    this.onUpdate = o.onUpdate || function () { /* do nothing */ };
     this.sourceUrl = o.sourceUrl || 'https://basslin.es/player.json';
     this.vol = o.vol || 1.0;
 
     this.howl = null;
-    this.loop = 0;
-    this.playlist = null;
-    this.playlists = null;
-    this.releases = null;
+    this.loop = false;
+    this.playlist = [];
+    this.playlists = [];
+    this.releases = [];
     this.track = null;
-    this.tracks = null;
+    this.tracks = [];
     this.visitToken = null;
     this.visitorToken = null;
   }
@@ -39,27 +112,28 @@ class BlnPlayer {
    * Initiate retrieval of release data from a remote URL.
    */
   load() {
-    window.player = this;
-
     const reqData = new XMLHttpRequest();
-    reqData.addEventListener('load', this.loadData);
+    reqData.addEventListener('load', () => {
+      if (reqData.status >= 200 && reqData.status < 400) {
+        const dataBundle = JSON.parse(reqData.response) as DataBundle;
+        this.loadData(dataBundle);
+      }
+    });
     reqData.open('GET', this.sourceUrl);
     reqData.send();
   }
 
-  loadData(event, data) {
-    const { player } = window;
-    const response = data || JSON.parse(this.responseText);
-    player.visitToken = response.visitToken;
-    player.visitorToken = response.visitorToken;
-    player.loadReleases(response.releases);
-    player.loadPlaylists(response.playlists);
-    player.ready();
+  loadData(data: DataBundle) {
+    this.visitToken = data.visitToken;
+    this.visitorToken = data.visitorToken;
+    this.loadReleases(data.releases);
+    this.loadPlaylists(data.playlists);
+    this.ready();
   }
 
-  loadReleases(releaseData) {
-    const releases = [];
-    const tracks = [];
+  loadReleases(releaseData: Release[]) {
+    const releases: Release[] = [];
+    const tracks: Track[] = [];
 
     releaseData.forEach((release) => {
       releases[release.id] = release;
@@ -74,8 +148,8 @@ class BlnPlayer {
     this.tracks = tracks;
   }
 
-  loadPlaylists(playlistData) {
-    const playlists = [];
+  loadPlaylists(playlistData: Playlist[]) {
+    const playlists: Playlist[] = [];
 
     playlistData.forEach((playlist) => {
       playlists[playlist.id] = playlist;
@@ -96,7 +170,7 @@ class BlnPlayer {
     if (this.autoPlay) this.pause();
   }
 
-  selectPlaylist(playlistId) {
+  selectPlaylist(playlistId: number) {
     this.playlist = this.playlists[playlistId].tracks;
     if (this.howl) this.howl.stop();
     if (this.playlists[playlistId].autoShuffle) this.shuffle();
@@ -116,7 +190,11 @@ class BlnPlayer {
     }
 
     this.playlist = array;
-    if (this.isLoading || this.isPlaying) {
+
+    // If a track is already playing when shuffle is called, place it
+    // at the beginning of the shuffled playlist. Otherwise, select
+    // the new first track as the current track.
+    if (this.track && (this.isLoading || this.isPlaying)) {
       this.playlist.splice(this.playlist.indexOf(this.track.id), 1);
       this.playlist.unshift(this.track.id);
     } else {
@@ -127,7 +205,7 @@ class BlnPlayer {
     if (this.onUpdate) this.onUpdate();
   }
 
-  volume(vol) {
+  volume(vol: number) {
     this.vol = vol;
     // Howler.volume(this.vol);
     if (this.howl) this.howl.volume(this.vol);
@@ -142,16 +220,17 @@ class BlnPlayer {
   }
 
   get release() {
+    if (this.track === null) return;
     return this.releases[this.track.releaseId];
   }
 
-  play(track) {
+  play(track: Track) {
     if (this.howl) {
       this.howl.stop();
     }
 
     this.track = track;
-    this.sendEvent();
+    this.sendEvent(track);
     this.howl = new Howl({
       src: [track.webm, track.m4a, track.mp3],
       volume: this.vol,
@@ -166,7 +245,7 @@ class BlnPlayer {
     this.howl.play();
   }
 
-  sendEvent() {
+  sendEvent(track: Track) {
     const data = {
       events: [{
         name: '$play',
@@ -175,9 +254,9 @@ class BlnPlayer {
           apiSecret: this.apiSecret,
           origin: window.location.href,
           track: {
-            id: this.track.id,
-            title: this.track.title,
-            artist: this.track.artist,
+            id: track.id,
+            title: track.title,
+            artist: track.artist,
           },
           vol: this.vol,
         },
@@ -195,11 +274,11 @@ class BlnPlayer {
   }
 
   pause() {
-    if (this.isPlaying) {
+    if (this.howl && this.isPlaying) {
       this.howl.pause();
     } else if (this.howl) {
       this.howl.play();
-    } else {
+    } else if (this.track) {
       this.play(this.track);
     }
 
@@ -207,6 +286,8 @@ class BlnPlayer {
   }
 
   next() {
+    if (!this.track) return;
+
     const pos = this.playlist.indexOf(this.track.id);
     const next = this.playlist[pos + 1];
     log.info(`BlnPlayer: next ${pos} -> ${next}`);
@@ -217,6 +298,8 @@ class BlnPlayer {
   }
 
   prev() {
+    if (!this.track) return;
+
     const pos = this.playlist.indexOf(this.track.id);
     const prev = this.playlist[pos - 1];
 
