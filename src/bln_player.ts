@@ -2,9 +2,9 @@ import { Howl } from 'howler';
 
 import log from 'loglevel';
 
-type BlnPlayerCallback = () => void;
+export type BlnPlayerCallback = () => void;
 
-interface BlnPlayerOptions {
+export interface BlnPlayerOptions {
   apiKey?: string;
   apiSecret?: string;
   autoLoop?: boolean;
@@ -20,7 +20,7 @@ interface BlnPlayerOptions {
   vol?: number;
 }
 
-interface Track {
+export interface Track {
   id: number;
   releaseId: number;
   artist: string;
@@ -30,7 +30,7 @@ interface Track {
   webm: string;
 }
 
-interface Release {
+export interface Release {
   id: number;
   title: string;
   url: string;
@@ -38,7 +38,7 @@ interface Release {
   tracks: Track[];
 }
 
-interface Playlist {
+export interface Playlist {
   id: number;
   code: string;
   title: string;
@@ -47,7 +47,7 @@ interface Playlist {
   tracks: number[];
 }
 
-interface DataBundle {
+export interface DataBundle {
   visitToken: string;
   visitorToken: string;
   releases: Release[];
@@ -55,7 +55,7 @@ interface DataBundle {
 }
 
 /** Play music published by basslin.es records. */
-class BlnPlayer {
+export class BlnPlayer {
   apiKey: string;
   apiSecret: string;
   autoLoop: boolean;

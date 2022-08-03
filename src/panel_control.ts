@@ -30,7 +30,7 @@ const playerHtml = `
   </div>
 `;
 
-interface PanelControlOptions {
+export interface PanelControlOptions {
   apiKey?: string;
   apiSecret?: string;
   autoLoop?: boolean;
@@ -44,7 +44,7 @@ interface PanelControlOptions {
   sourceUrl?: string;
 }
 
-class PanelControl {
+export class PanelControl {
   elTarget: HTMLElement | null | undefined;
   elPlayer: HTMLElement | null | undefined;
   elCover: HTMLElement | null | undefined;

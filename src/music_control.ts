@@ -60,7 +60,7 @@ const playerHtml = `
   </div>
 `;
 
-interface MusicControlOptions {
+export interface MusicControlOptions {
   apiKey?: string;
   apiSecret?: string;
   eventsUrl?: string;
@@ -68,7 +68,7 @@ interface MusicControlOptions {
 }
 
 /** MusicControl handles UI interactions to control a BlnPlayer. */
-class MusicControl {
+export class MusicControl {
   elPlayer: HTMLElement | null | undefined;
   elArt: HTMLElement | null | undefined;
   elBox: HTMLElement | null | undefined;
