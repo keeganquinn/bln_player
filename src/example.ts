@@ -1,3 +1,5 @@
+import 'bootstrap';
+
 import { MusicControl, PanelControl } from './index';
 
 const html = `
