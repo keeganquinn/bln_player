@@ -7,22 +7,20 @@ module.exports = {
   mode: 'production',
   devtool: 'source-map',
   entry: {
-    example: './src/example.js',
-    main: './src/index.js',
+    example: './dist/example.js'
   },
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: '[name].js',
-    library: 'bln_player',
-    libraryTarget: 'umd',
+    filename: '[name].bundle.js'
   },
   plugins: [
     new HtmlWebpackPlugin({
       chunks: ['example'],
+      filename: 'example.html',
       title: 'bln_player',
     }),
     new HtmlWebpackTagsPlugin({
-      tags: ['style.css'],
+      tags: ['example.css'],
     }),
     new webpack.optimize.LimitChunkCountPlugin({
       maxChunks: 1

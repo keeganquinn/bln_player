@@ -1,3 +1,5 @@
+import 'bootstrap';
+
 import { MusicControl, PanelControl } from './index';
 
 const html = `
@@ -10,7 +12,7 @@ const html = `
   </div>
 `;
 
-function startMusicControl(event) {
+function startMusicControl(event: Event) {
   const musicControl = new MusicControl({
     apiKey: 'example_MusicControl',
     eventsUrl: 'https://basslines-staging.quinn.tk/ahoy/events',
@@ -22,8 +24,8 @@ function startMusicControl(event) {
   return false;
 }
 
-function startPanelControl(event) {
-  const elPanelTarget = document.getElementById('panelTarget');
+function startPanelControl(event: Event) {
+  const elPanelTarget = document.getElementById('panelTarget') as HTMLElement;
   const panelControl = new PanelControl({
     apiKey: 'example_PanelControl',
     autoLoop: true,
@@ -44,9 +46,9 @@ function startPanelControl(event) {
 document.addEventListener('DOMContentLoaded', () => {
   document.body.innerHTML = html;
 
-  const elStartMusicControl = document.getElementById('startMusicControl');
+  const elStartMusicControl = document.getElementById('startMusicControl') as HTMLElement;
   elStartMusicControl.addEventListener('click', startMusicControl);
 
-  const elStartPanelControl = document.getElementById('startPanelControl');
+  const elStartPanelControl = document.getElementById('startPanelControl') as HTMLElement;
   elStartPanelControl.addEventListener('click', startPanelControl);
 });

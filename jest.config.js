@@ -21,6 +21,11 @@ module.exports = {
   ],
   testEnvironment: 'jsdom',
   transformIgnorePatterns: [
-    'node_modules/?!(spin.js)',
+    'node_modules/(?!spin\.js)',
   ],
+  preset: 'ts-jest',
+  transform: {
+    '^.+\\.(ts|tsx)?$': 'ts-jest',
+    "^.+\\.(js|jsx)$": "babel-jest",
+  }
 };

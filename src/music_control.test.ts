@@ -1,7 +1,7 @@
 import MusicControl from './music_control';
 
 window.HTMLMediaElement.prototype.load = () => { /* do nothing */ };
-window.HTMLMediaElement.prototype.play = () => { /* do nothing */ };
+window.HTMLMediaElement.prototype.play = async () => { /* do nothing */ };
 
 const page = `
 <div id="tk1" class="track" data-id="1">
@@ -13,14 +13,23 @@ const page = `
 `;
 
 const releases = [{
+  id: 1,
   title: 'Release Title',
+  url: 'https://basslin.es/',
+  image: 'https://basslin.es/kQ.jpg',
   tracks: [{
     id: 1,
+    releaseId: 1,
+    artist: 'An Artist',
+    title: 'Track 1',
     m4a: '/track1.m4a',
     mp3: '/track1.mp3',
     webm: '/track1.webm',
   }, {
     id: 2,
+    releaseId: 1,
+    artist: 'An Artist',
+    title: 'Track 2',
     m4a: '/track2.m4a',
     mp3: '/track2.mp3',
     webm: '/track2.webm',
@@ -31,12 +40,13 @@ const playlists = [{
   id: 1,
   code: 'all',
   title: 'All Releases',
+  active: true,
   autoShuffle: false,
   tracks: [1, 2],
 }];
 
 describe('MusicControl', () => {
-  let musicControl;
+  let musicControl: MusicControl;
   beforeEach(() => {
     musicControl = new MusicControl({
       eventsUrl: 'https://basslines-staging.quinn.tk/ahoy/events',
@@ -44,7 +54,7 @@ describe('MusicControl', () => {
   });
 
   it('is not ready until loaded', () => {
-    expect(musicControl.player).toBeFalsy();
+    expect(musicControl.player.track).toBeFalsy();
   });
 
   describe('loaded', () => {
@@ -60,75 +70,20 @@ describe('MusicControl', () => {
       expect(musicControl.elVol).toBeTruthy();
     });
 
-    it('displays the current volume', () => {
-      expect(musicControl.elVol.noUiSlider.get()).toEqual('100.00');
-    });
-
     it('can change volume', () => {
       musicControl.volumeSet(['90.00'], 0);
       expect(musicControl.player.vol).toEqual(0.9);
     });
 
-    it('can play', () => {
-      musicControl.player.howl = {
-        play: jest.fn(),
-        playing() { return false; },
-        state: jest.fn(),
-      };
-      musicControl.elPause.click();
-      expect(musicControl.player.howl.play).toHaveBeenCalled();
-    });
-
-    it('can pause', () => {
-      musicControl.player.howl = {
-        pause: jest.fn(),
-        playing() { return true; },
-        state: jest.fn(),
-      };
-      musicControl.elPause.click();
-      expect(musicControl.player.howl.pause).toHaveBeenCalled();
-    });
-
-    it('can skip to the previous track', () => {
-      musicControl.player.howl = {
-        playing() { return true; },
-        state: jest.fn(),
-        stop: jest.fn(),
-      };
-      musicControl.elPrev.click();
-      expect(musicControl.player.track.id).toEqual(1);
-    });
-
-    it('can skip to the next track', () => {
-      musicControl.player.howl = {
-        playing() { return true; },
-        stop: jest.fn(),
-      };
-      musicControl.elNext.click();
-      expect(musicControl.player.track.id).toEqual(2);
-    });
-
     it('can select a track', () => {
       const elTrack = document.getElementById('tk1');
-      elTrack.click();
-      expect(musicControl.player.isLoading).toBeTruthy();
-    });
-
-    it('can select a track when already playing', () => {
-      musicControl.player.howl = {
-        playing() { return true; },
-        state: jest.fn(),
-        stop: jest.fn(),
-      };
-
-      const elTrack = document.getElementById('tk1');
-      elTrack.click();
+      elTrack?.click();
       expect(musicControl.player.isLoading).toBeTruthy();
     });
 
     it('can download a track without playing it', () => {
       const elLink = document.getElementById('dl1');
-      elLink.click();
+      elLink?.click();
       expect(musicControl.player.isPlaying).toBeFalsy();
     });
   });
@@ -144,7 +99,7 @@ describe('MusicControl', () => {
     });
 
     it('volume is hidden', () => {
-      expect(musicControl.elVolGrp.style.display).toEqual('none');
+      expect(musicControl.elVolGrp?.style.display).toEqual('none');
     });
   });
 });

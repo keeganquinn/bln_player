@@ -10,11 +10,9 @@
 
 # Build artifacts
 /checkstyle-*.xml
-/coverage/
 /coverage-js/
 /dist/
-/doc/
-/jsdoc/
+/docs/
 /junit.xml
 /rspec.xml
 
