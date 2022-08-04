@@ -13,9 +13,10 @@
     "build:css": "sass ./src/example.scss ./dist/example.css --no-source-map --load-path=node_modules",
     "build:html": "webpack --config webpack.config.js",
     "clean": "rimraf *.xml coverage-js dist docs",
+    "example": "npm run build && npm run build:css && npm run build:html",
     "lint": "eslint src",
     "doc": "typedoc src/index.ts",
-    "prepack": "npm run build && npm run build:css && npm run build:html",
+    "prepare": "npm run build",
     "server": "ws -d dist -f dev",
     "test": "jest --coverage"
   },
