@@ -8,7 +8,8 @@ npm install --frozen-lockfile
 
 
 npm -s run clean
-npm -s run prepack
+npm -s run prepare
+npm -s run example
 
 npm -s test || true
 npm -s run doc || true
