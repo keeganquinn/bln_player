@@ -2,8 +2,17 @@ import { Howl } from 'howler';
 
 import log from 'loglevel';
 
+/**
+ * Callback functions for use with {@link BlnPlayer.onLoad},
+ * {@link BlnPlayer.onPlay}, and {@link BlnPlayer.onUpdate} must
+ * implement this method signature.
+ */
 export type BlnPlayerCallback = () => void;
 
+/**
+ * Configuration options which are available when creating a new
+ * {@link BlnPlayer} instance.
+ */
 export interface BlnPlayerOptions {
   apiKey?: string;
   apiSecret?: string;
@@ -20,6 +29,9 @@ export interface BlnPlayerOptions {
   vol?: number;
 }
 
+/**
+ * A Track represents a single audio recording on a {@link Release}.
+ */
 export interface Track {
   id: number;
   releaseId: number;
@@ -30,6 +42,10 @@ export interface Track {
   webm: string;
 }
 
+/**
+ * A Release represents metadata associated with a specific group of
+ * {@link Track} recordings.
+ */
 export interface Release {
   id: number;
   title: string;
@@ -38,6 +54,9 @@ export interface Release {
   tracks: Track[];
 }
 
+/**
+ * A Playlist represents a series of {@link Track} recordings.
+ */
 export interface Playlist {
   id: number;
   code: string;
@@ -47,6 +66,13 @@ export interface Playlist {
   tracks: number[];
 }
 
+/**
+ * A DataBundle contains all runtime data needed for {@link BlnPlayer},
+ * including {@link Release} and {@link Playlist} data.
+ *
+ * The remote API endpoint specified in {@link BlnPlayerOptions.sourceUrl}
+ * must return data in this format.
+ */
 export interface DataBundle {
   visitToken: string;
   visitorToken: string;
@@ -56,32 +82,60 @@ export interface DataBundle {
 
 /** Play music published by basslin.es records. */
 export class BlnPlayer {
+  /** API authorization key. */
   apiKey: string;
+  /** API authentication secret. */
   apiSecret: string;
+  /** Automatically loop playback at end of playlist. */
   autoLoop: boolean;
+  /** Automatically start playback when loaded. */
   autoPlay: boolean;
+  /** Automatically shuffle playlist when loaded. */
   autoShuffle: boolean;
+  /** Default playlist to select when loaded. */
   defaultPlaylist: string;
+  /**
+   * Remote API endpoint for reporting play track events.
+   * Set to null to disable tracking.
+   */
   eventsUrl: string;
+  /** Use streaming HTML5 audio. */
   html5: boolean;
+  /** Load callback. */
   onLoad: BlnPlayerCallback;
+  /** Play callback. */
   onPlay: BlnPlayerCallback;
+  /** Update callback. */
   onUpdate: BlnPlayerCallback;
+  /** Remote API endpoint for data bundle source. */
   sourceUrl: string;
+  /** Initial volume setting. Range is from `0.0` to `1.0`. */
   vol: number;
 
-  howl: Howl | null;
+  /** Current loop selection setting. */
   loop: boolean;
+
+  /** Howl instance used for audio playback. @internal */
+  howl: Howl | null;
+  /** Current selected playlist. @internal */
   playlist: number[];
+  /** Loaded playlist data. @internal */
   playlists: Playlist[];
+  /** Loaded release data. @internal */
   releases: Release[];
+  /** Current selected track. @internal */
   track: Track | null;
+  /** Loaded track data. @internal */
   tracks: Track[];
+  /** Current visit token used for tracking. @internal */
   visitToken: string | null;
+  /** Current visitor token used for tracking. @internal */
   visitorToken: string | null;
 
   /**
-   * Create a new Player.
+   * Create a new player instance.
+   *
+   * @param opts - configuration options
    */
   constructor(opts: BlnPlayerOptions) {
     const o = opts || {};
@@ -112,7 +166,11 @@ export class BlnPlayer {
   }
 
   /**
-   * Initiate retrieval of release data from a remote URL.
+   * Initiate retrieval and loading of release data from the configured
+   * remote API endpoint at {@link BlnPlayerOptions.sourceUrl}.
+   *
+   * This method starts an asynchronous XHR and will trigger the
+   * {@link onLoad} callback once complete.
    */
   load() {
     const reqData = new XMLHttpRequest();
@@ -126,6 +184,15 @@ export class BlnPlayer {
     reqData.send();
   }
 
+  /**
+   * Load all required data from a bundle.
+   *
+   * Will trigger the {@link onLoad} callback once complete.
+   *
+   * @param data - bundled data to load
+   *
+   * @internal
+   */
   loadData(data: DataBundle) {
     this.visitToken = data.visitToken;
     this.visitorToken = data.visitorToken;
@@ -134,6 +201,13 @@ export class BlnPlayer {
     this.ready();
   }
 
+  /**
+   * Load release data.
+   *
+   * @param releaseData - releases to load
+   *
+   * @internal @hidden
+   */
   loadReleases(releaseData: Release[]) {
     const releases: Release[] = [];
     const tracks: Track[] = [];
@@ -151,6 +225,13 @@ export class BlnPlayer {
     this.tracks = tracks;
   }
 
+  /**
+   * Load playlist data.
+   *
+   * @param playlistData - playlists to load
+   *
+   * @internal @hidden
+   */
   loadPlaylists(playlistData: Playlist[]) {
     const playlists: Playlist[] = [];
 
@@ -164,6 +245,12 @@ export class BlnPlayer {
     this.playlists = playlists;
   }
 
+  /**
+   * Make the player ready for playback and trigger automatic actions
+   * after all required data has been loaded.
+   *
+   * @internal @hidden
+   */
   ready() {
     this.track = this.tracks[this.playlist[0]];
 
@@ -173,15 +260,25 @@ export class BlnPlayer {
     if (this.autoPlay) this.pause();
   }
 
-  selectPlaylist(playlistId: number) {
-    this.playlist = this.playlists[playlistId].tracks;
+  /**
+   * Select a playlist.
+   *
+   * @param idx - index of the playlist to be selected
+   */
+  selectPlaylist(idx: number) {
+    this.playlist = this.playlists[idx].tracks;
     if (this.howl) this.howl.stop();
-    if (this.playlists[playlistId].autoShuffle) this.shuffle();
+    if (this.playlists[idx].autoShuffle) this.shuffle();
 
     this.track = this.tracks[this.playlist[0]];
     this.howl = null;
   }
 
+  /**
+   * Shuffle the order of the current loaded playlist.
+   *
+   * Will trigger the {@link onUpdate} callback once complete.
+   */
   shuffle() {
     const array = this.playlist;
 
@@ -208,25 +305,50 @@ export class BlnPlayer {
     if (this.onUpdate) this.onUpdate();
   }
 
+  /**
+   * Set the volume level for audio playback.
+   *
+   * @param vol - new volume level, may be a number from `0.0` to `1.0`
+   */
   volume(vol: number) {
     this.vol = vol;
     // Howler.volume(this.vol);
     if (this.howl) this.howl.volume(this.vol);
   }
 
+  /**
+   * Return `true` if the audio playback engine is currently loading audio,
+   * or `false` otherwise.
+   */
   get isLoading() {
     return !!(this.howl && this.howl.state() !== 'loaded');
   }
 
+  /**
+   * Return `true` if the audio playback engine is currently playing audio,
+   * or `false` otherwise.
+   */
   get isPlaying() {
     return !!(this.howl && this.howl.playing());
   }
 
+  /**
+   * Return the current selected {@link Release}.
+   */
   get release() {
     if (this.track === null) return;
     return this.releases[this.track.releaseId];
   }
 
+  /**
+   * Play a specific track.
+   *
+   * Will trigger the {@link onPlay} callback when playback begins and will
+   * trigger the {@link onUpdate} callback once immediately, and again when
+   * the audio engine has completed loading the audio file.
+   *
+   * @param track - track to be played
+   */
   play(track: Track) {
     if (this.howl) {
       this.howl.stop();
@@ -248,7 +370,16 @@ export class BlnPlayer {
     this.howl.play();
   }
 
+  /**
+   * Report play track event to the configured remote API endpoint.
+   *
+   * @param track - track being played
+   *
+   * @internal
+   */
   sendEvent(track: Track) {
+    if (!this.eventsUrl) return;
+
     const data = {
       events: [{
         name: '$play',
@@ -276,6 +407,11 @@ export class BlnPlayer {
     xhr.send(JSON.stringify(data));
   }
 
+  /**
+   * Pause or resume playback.
+   *
+   * Will trigger the {@link onUpdate} callback once complete.
+   */
   pause() {
     if (this.howl && this.isPlaying) {
       this.howl.pause();
@@ -288,6 +424,11 @@ export class BlnPlayer {
     if (this.onUpdate) this.onUpdate();
   }
 
+  /**
+   * Select the next track in the current playlist.
+   *
+   * Will trigger the {@link onUpdate} callback once complete.
+   */
   next() {
     if (!this.track) return;
 
@@ -300,6 +441,11 @@ export class BlnPlayer {
     else if (this.onUpdate) this.onUpdate();
   }
 
+  /**
+   * Select the previous track in the current playlist.
+   *
+   * Will trigger the {@link onUpdate} callback once complete.
+   */
   prev() {
     if (!this.track) return;
 
