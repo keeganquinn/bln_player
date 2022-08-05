@@ -1,12 +1,20 @@
-import { library, dom } from '@fortawesome/fontawesome-svg-core';
-import {
-  faBackward, faForward, faList, faMusic, faPause, faPlay, faRandom,
-  faVolumeDown, faVolumeMute, faVolumeOff, faVolumeUp,
-} from '@fortawesome/free-solid-svg-icons';
 import BlnPlayer from './bln_player';
 
 import Cookies from 'js-cookie';
 import noUiSlider from 'nouislider';
+
+import { library, dom } from '@fortawesome/fontawesome-svg-core';
+import { faBackward } from '@fortawesome/free-solid-svg-icons/faBackward';
+import { faForward } from '@fortawesome/free-solid-svg-icons/faForward';
+import { faList } from '@fortawesome/free-solid-svg-icons/faList';
+import { faMusic } from '@fortawesome/free-solid-svg-icons/faMusic';
+import { faPause } from '@fortawesome/free-solid-svg-icons/faPause';
+import { faPlay } from '@fortawesome/free-solid-svg-icons/faPlay';
+import { faRandom } from '@fortawesome/free-solid-svg-icons/faRandom';
+import { faVolumeDown } from '@fortawesome/free-solid-svg-icons/faVolumeDown';
+import { faVolumeMute } from '@fortawesome/free-solid-svg-icons/faVolumeMute';
+import { faVolumeOff } from '@fortawesome/free-solid-svg-icons/faVolumeOff';
+import { faVolumeUp } from '@fortawesome/free-solid-svg-icons/faVolumeUp';
 
 const playerCls = 'border border-dark m-2 p-2';
 const playerHtml = `
