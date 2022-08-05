@@ -3,9 +3,9 @@ import { Howl } from 'howler';
 import log from 'loglevel';
 
 /**
- * Callback functions for use with {@link BlnPlayer.onLoad},
- * {@link BlnPlayer.onPlay}, and {@link BlnPlayer.onUpdate} must
- * implement this method signature.
+ * Callback functions for use with {@link BlnPlayerOptions.onLoad},
+ * {@link BlnPlayerOptions.onPlay}, and {@link BlnPlayerOptions.onUpdate}
+ * must implement this method signature.
  */
 export type BlnPlayerCallback = () => void;
 
@@ -14,19 +14,33 @@ export type BlnPlayerCallback = () => void;
  * {@link BlnPlayer} instance.
  */
 export interface BlnPlayerOptions {
+  /** API authorization key. */
   apiKey?: string;
+  /** API authentication secret. */
   apiSecret?: string;
+  /** Automatically loop playback at end of playlist. */
   autoLoop?: boolean;
+  /** Automatically start playback when loaded. */
   autoPlay?: boolean;
+  /** Automatically shuffle playlist when loaded. */
   autoShuffle?: boolean;
+  /** Default playlist to select when loaded. */
   defaultPlaylist?: string;
+  /**
+   * Remote API endpoint for reporting play track events.
+   * Set to null to disable tracking.
+   */
   eventsUrl?: string;
+  /** Use streaming HTML5 audio. */
   html5?: boolean;
+  /** Load callback. */
   onLoad?: BlnPlayerCallback;
+  /** Play callback. */
   onPlay?: BlnPlayerCallback;
+  /** Update callback. */
   onUpdate?: BlnPlayerCallback;
+  /** Remote API endpoint for data bundle source. */
   sourceUrl?: string;
-  vol?: number;
 }
 
 /**
@@ -82,39 +96,13 @@ export interface DataBundle {
 
 /** Play music published by basslin.es records. */
 export class BlnPlayer {
-  /** API authorization key. */
-  apiKey: string;
-  /** API authentication secret. */
-  apiSecret: string;
-  /** Automatically loop playback at end of playlist. */
-  autoLoop: boolean;
-  /** Automatically start playback when loaded. */
-  autoPlay: boolean;
-  /** Automatically shuffle playlist when loaded. */
-  autoShuffle: boolean;
-  /** Default playlist to select when loaded. */
-  defaultPlaylist: string;
-  /**
-   * Remote API endpoint for reporting play track events.
-   * Set to null to disable tracking.
-   */
-  eventsUrl: string;
-  /** Use streaming HTML5 audio. */
-  html5: boolean;
-  /** Load callback. */
-  onLoad: BlnPlayerCallback;
-  /** Play callback. */
-  onPlay: BlnPlayerCallback;
-  /** Update callback. */
-  onUpdate: BlnPlayerCallback;
-  /** Remote API endpoint for data bundle source. */
-  sourceUrl: string;
-  /** Initial volume setting. Range is from `0.0` to `1.0`. */
-  vol: number;
-
   /** Current loop selection setting. */
   loop: boolean;
+  /** Current volume setting. Range is from `0.0` to `1.0`. */
+  vol: number;
 
+  /** Configuration options. @internal */
+  opts: BlnPlayerOptions;
   /** Howl instance used for audio playback. @internal */
   howl: Howl | null;
   /** Current selected playlist. @internal */
@@ -140,22 +128,24 @@ export class BlnPlayer {
   constructor(opts: BlnPlayerOptions) {
     const o = opts || {};
 
-    this.apiKey = o.apiKey || "unidentified";
-    this.apiSecret = o.apiSecret || "";
-    this.autoLoop = o.autoLoop || false;
-    this.autoPlay = o.autoPlay || false;
-    this.autoShuffle = o.autoShuffle || false;
-    this.defaultPlaylist = o.defaultPlaylist || 'all';
-    this.eventsUrl = o.eventsUrl || 'https://basslin.es/ahoy/events';
-    this.html5 = o.html5 || false;
-    this.onLoad = o.onLoad || function () { /* do nothing */ };
-    this.onPlay = o.onPlay || function () { /* do nothing */ };
-    this.onUpdate = o.onUpdate || function () { /* do nothing */ };
-    this.sourceUrl = o.sourceUrl || 'https://basslin.es/player.json';
-    this.vol = o.vol || 1.0;
+    o.apiKey = o.apiKey || "unidentified";
+    o.apiSecret = o.apiSecret || "";
+    o.autoLoop = o.autoLoop || false;
+    o.autoPlay = o.autoPlay || false;
+    o.autoShuffle = o.autoShuffle || false;
+    o.defaultPlaylist = o.defaultPlaylist || 'all';
+    o.eventsUrl = o.eventsUrl || 'https://basslin.es/ahoy/events';
+    o.html5 = o.html5 || false;
+    o.onLoad = o.onLoad || function () { /* do nothing */ };
+    o.onPlay = o.onPlay || function () { /* do nothing */ };
+    o.onUpdate = o.onUpdate || function () { /* do nothing */ };
+    o.sourceUrl = o.sourceUrl || 'https://basslin.es/player.json';
 
-    this.howl = null;
     this.loop = false;
+    this.vol = 1.0;
+
+    this.opts = o;
+    this.howl = null;
     this.playlist = [];
     this.playlists = [];
     this.releases = [];
@@ -170,9 +160,11 @@ export class BlnPlayer {
    * remote API endpoint at {@link BlnPlayerOptions.sourceUrl}.
    *
    * This method starts an asynchronous XHR and will trigger the
-   * {@link onLoad} callback once complete.
+   * {@link BlnPlayerOptions.onLoad} callback once complete.
    */
   load() {
+    if (!this.opts.sourceUrl) return;
+
     const reqData = new XMLHttpRequest();
     reqData.addEventListener('load', () => {
       if (reqData.status >= 200 && reqData.status < 400) {
@@ -180,14 +172,14 @@ export class BlnPlayer {
         this.loadData(dataBundle);
       }
     });
-    reqData.open('GET', this.sourceUrl);
+    reqData.open('GET', this.opts.sourceUrl);
     reqData.send();
   }
 
   /**
    * Load all required data from a bundle.
    *
-   * Will trigger the {@link onLoad} callback once complete.
+   * Will trigger the {@link BlnPlayerOptions.onLoad} callback once complete.
    *
    * @param data - bundled data to load
    *
@@ -237,7 +229,7 @@ export class BlnPlayer {
 
     playlistData.forEach((playlist) => {
       playlists[playlist.id] = playlist;
-      if (playlist.code === this.defaultPlaylist) {
+      if (playlist.code === this.opts.defaultPlaylist) {
         this.playlist = playlist.tracks;
       }
     });
@@ -254,10 +246,10 @@ export class BlnPlayer {
   ready() {
     this.track = this.tracks[this.playlist[0]];
 
-    if (this.autoLoop) this.loop = this.autoLoop;
-    if (this.onLoad) this.onLoad();
-    if (this.autoShuffle) this.shuffle();
-    if (this.autoPlay) this.pause();
+    if (this.opts.autoLoop) this.loop = this.opts.autoLoop;
+    if (this.opts.onLoad) this.opts.onLoad();
+    if (this.opts.autoShuffle) this.shuffle();
+    if (this.opts.autoPlay) this.pause();
   }
 
   /**
@@ -277,7 +269,7 @@ export class BlnPlayer {
   /**
    * Shuffle the order of the current loaded playlist.
    *
-   * Will trigger the {@link onUpdate} callback once complete.
+   * Will trigger the {@link BlnPlayerOptions.onUpdate} callback once complete.
    */
   shuffle() {
     const array = this.playlist;
@@ -302,7 +294,7 @@ export class BlnPlayer {
       this.howl = null;
     }
 
-    if (this.onUpdate) this.onUpdate();
+    if (this.opts.onUpdate) this.opts.onUpdate();
   }
 
   /**
@@ -343,9 +335,10 @@ export class BlnPlayer {
   /**
    * Play a specific track.
    *
-   * Will trigger the {@link onPlay} callback when playback begins and will
-   * trigger the {@link onUpdate} callback once immediately, and again when
-   * the audio engine has completed loading the audio file.
+   * Will trigger the {@link BlnPlayerOptions.onPlay} callback when playback
+   * begins and will trigger the {@link BlnPlayerOptions.onUpdate} callback
+   * once immediately, and again when the audio engine has completed loading
+   * the audio file.
    *
    * @param track - track to be played
    */
@@ -359,14 +352,14 @@ export class BlnPlayer {
     this.howl = new Howl({
       src: [track.webm, track.m4a, track.mp3],
       volume: this.vol,
-      html5: this.html5,
+      html5: this.opts.html5,
       onend: this.next.bind(this),
-      onload: this.onUpdate,
-      onplay: this.onPlay,
-      onseek: this.onPlay,
+      onload: this.opts.onUpdate,
+      onplay: this.opts.onPlay,
+      onseek: this.opts.onPlay,
     });
 
-    if (this.onUpdate) this.onUpdate();
+    if (this.opts.onUpdate) this.opts.onUpdate();
     this.howl.play();
   }
 
@@ -378,14 +371,14 @@ export class BlnPlayer {
    * @internal
    */
   sendEvent(track: Track) {
-    if (!this.eventsUrl) return;
+    if (!this.opts.eventsUrl) return;
 
     const data = {
       events: [{
         name: '$play',
         properties: {
-          apiKey: this.apiKey,
-          apiSecret: this.apiSecret,
+          apiKey: this.opts.apiKey,
+          apiSecret: this.opts.apiSecret,
           origin: window.location.href,
           track: {
             id: track.id,
@@ -402,7 +395,7 @@ export class BlnPlayer {
     };
 
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', this.eventsUrl, true);
+    xhr.open('POST', this.opts.eventsUrl, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify(data));
   }
@@ -410,7 +403,7 @@ export class BlnPlayer {
   /**
    * Pause or resume playback.
    *
-   * Will trigger the {@link onUpdate} callback once complete.
+   * Will trigger the {@link BlnPlayerOptions.onUpdate} callback once complete.
    */
   pause() {
     if (this.howl && this.isPlaying) {
@@ -421,13 +414,13 @@ export class BlnPlayer {
       this.play(this.track);
     }
 
-    if (this.onUpdate) this.onUpdate();
+    if (this.opts.onUpdate) this.opts.onUpdate();
   }
 
   /**
    * Select the next track in the current playlist.
    *
-   * Will trigger the {@link onUpdate} callback once complete.
+   * Will trigger the {@link BlnPlayerOptions.onUpdate} callback once complete.
    */
   next() {
     if (!this.track) return;
@@ -438,13 +431,13 @@ export class BlnPlayer {
 
     if (next) this.play(this.tracks[next]);
     else if (this.loop) this.play(this.tracks[this.playlist[0]]);
-    else if (this.onUpdate) this.onUpdate();
+    else if (this.opts.onUpdate) this.opts.onUpdate();
   }
 
   /**
    * Select the previous track in the current playlist.
    *
-   * Will trigger the {@link onUpdate} callback once complete.
+   * Will trigger the {@link BlnPlayerOptions.onUpdate} callback once complete.
    */
   prev() {
     if (!this.track) return;
@@ -453,7 +446,7 @@ export class BlnPlayer {
     const prev = this.playlist[pos - 1];
 
     if (prev) this.play(this.tracks[prev]);
-    else if (this.onUpdate) this.onUpdate();
+    else if (this.opts.onUpdate) this.opts.onUpdate();
   }
 }
 
