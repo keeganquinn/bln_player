@@ -38,35 +38,71 @@ const playerHtml = `
   </div>
 `;
 
+/**
+ * Configuration options which are available when creating a new
+ * {@link PanelControl} instance.
+ */
 export interface PanelControlOptions {
+  /** API authorization key. */
   apiKey?: string;
+  /** API authentication secret. */
   apiSecret?: string;
+  /** Automatically loop playback at end of playlist. */
   autoLoop?: boolean;
+  /** Automatically start playback when loaded. */
   autoPlay?: boolean;
+  /** Automatically shuffle playlist when loaded. */
   autoShuffle?: boolean;
+  /** Default playlist to select when loaded. */
   defaultPlaylist?: string;
+  /** Default volume setting. */
   defaultVol?: number;
+  /**
+   * Remote API endpoint for reporting play track events.
+   * Set to null to disable tracking.
+   */
   eventsUrl?: string;
+  /** Use streaming HTML5 audio. */
   html5?: boolean;
+  /** Target HTML element to render the UI. */
   elTarget?: HTMLElement;
+  /** Remote API endpoint for data bundle source. */
   sourceUrl?: string;
 }
 
+/** PanelControl provides a simple, extensible UI for {@link BlnPlayer}. */
 export class PanelControl {
+  /** UI element: target div @internal @hidden */
   elTarget: HTMLElement | null | undefined;
+  /** UI element: bln_panel div @internal @hidden */
   elPlayer: HTMLElement | null | undefined;
+  /** UI element: bln_cover div @internal @hidden */
   elCover: HTMLElement | null | undefined;
+  /** UI element: bln_track div @internal @hidden */
   elTrack: HTMLElement | null | undefined;
+  /** UI element: bln_release div @internal @hidden */
   elRelease: HTMLElement | null | undefined;
+  /** UI element: bln_prev a @internal @hidden */
   elPrev: HTMLElement | null | undefined;
+  /** UI element: bln_pause a @internal @hidden */
   elPause: HTMLElement | null | undefined;
+  /** UI element: bln_next a @internal @hidden */
   elNext: HTMLElement | null | undefined;
+  /** UI element: bln_shuffle a @internal @hidden */
   elShuffle: HTMLElement | null | undefined;
+  /** UI element: bln_volume div @internal @hidden */
   elVol: HTMLElement | null | undefined;
 
+  /** Controlled player instance. @internal */
   player: BlnPlayer;
+  /** Default volume setting. @internal @hidden */
   defaultVol: number;
 
+  /**
+   * Create a new music player UI.
+   *
+   * @param opts configuration options
+   */
   constructor(opts: PanelControlOptions) {
     const o = opts || {};
 
@@ -89,10 +125,21 @@ export class PanelControl {
     });
   }
 
+  /**
+   * Start the player engine.
+   */
   start() {
     this.player.load();
   }
 
+  /**
+   * Load references to DOM elements and prepare the UI.
+   *
+   * This method is used as a callback for the
+   * {@link BlnPlayerOptions.onLoad} hook.
+   *
+   * @internal @hidden
+   */
   load() {
     if (!this.player.track) return;
 
@@ -165,6 +212,12 @@ export class PanelControl {
     this.elPlayer.style.display = 'block';
   }
 
+  /**
+   * Load the volume control, including any previous state settings which
+   * may be stored in cookies.
+   *
+   * @internal @hidden
+   */
   volumeLoad() {
     const volCookie = Cookies.get('bln_volume');
     let vol;
@@ -190,6 +243,11 @@ export class PanelControl {
     }
   }
 
+  /**
+   * Set the volume, and store the setting in a cookie.
+   *
+   * @internal @hidden
+   */
   volumeSet(values: (string | number)[], handle: number) {
     const volCookie = '' + values[handle];
     Cookies.set('bln_volume', volCookie);
@@ -198,6 +256,15 @@ export class PanelControl {
     this.player.volume(vol * 0.01);
   }
 
+  /**
+   * Refresh the UI to reflect the current player state.
+   *
+   * This method is used as a callback for the
+   * {@link BlnPlayerOptions.onPlay} and
+   * {@link BlnPlayerOptions.onUpdate} hooks.
+   *
+   * @internal @hidden
+   */
   refresh() {
     if (!this.player.track) return;
 
@@ -224,6 +291,13 @@ export class PanelControl {
     }
   }
 
+  /**
+   * Pause or resume playback.
+   *
+   * @param event DOM event
+   *
+   * @internal @hidden
+   */
   pause(event: Event) {
     this.player.pause();
 
@@ -231,6 +305,13 @@ export class PanelControl {
     return false;
   }
 
+  /**
+   * Select the previous track on the current playlist.
+   *
+   * @param event DOM event
+   *
+   * @internal @hidden
+   */
   prev(event: Event) {
     this.player.prev();
 
@@ -238,6 +319,13 @@ export class PanelControl {
     return false;
   }
 
+  /**
+   * Select the next track on the current playlist.
+   *
+   * @param event DOM event
+   *
+   * @internal @hidden
+   */
   next(event: Event) {
     this.player.next();
 
@@ -245,6 +333,13 @@ export class PanelControl {
     return false;
   }
 
+  /**
+   * Shuffle the current playlist.
+   *
+   * @param event DOM event
+   *
+   * @internal @hidden
+   */
   shuffle(event: Event) {
     this.player.shuffle();
 

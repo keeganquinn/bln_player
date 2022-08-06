@@ -386,7 +386,7 @@ export class BlnPlayer {
    *
    * @param track track being played
    *
-   * @internal
+   * @internal @hidden
    */
   sendEvent(track: Track) {
     if (!this.opts.eventsUrl) return;

@@ -69,36 +69,71 @@ const playerHtml = `
   </div>
 `;
 
+/**
+ * Configuration options which are available when creating a new
+ * {@link MusicControl} instance.
+ */
 export interface MusicControlOptions {
+  /** API authorization key. */
   apiKey?: string;
+  /** API authentication secret. */
   apiSecret?: string;
+  /**
+   * Remote API endpoint for reporting play track events.
+   * Set to null to disable tracking.
+   */
   eventsUrl?: string;
+  /** Remote API endpoint for data bundle source. */
   sourceUrl?: string;
 }
 
-/** MusicControl handles UI interactions to control a BlnPlayer. */
+/** MusicControl provides a Bootstrap-based UI for {@link BlnPlayer}. */
 export class MusicControl {
+  /** UI element: bln_player div @internal @hidden */
   elPlayer: HTMLElement | null | undefined;
+  /** UI element: player_art div @internal @hidden */
   elArt: HTMLElement | null | undefined;
+  /** UI element: player_box div @internal @hidden */
   elBox: HTMLElement | null | undefined;
+  /** UI element: player_list tbody @internal @hidden */
   elList: HTMLElement | null | undefined;
+  /** UI element: player_sel select @internal @hidden */
   elSel: HTMLInputElement | null | undefined;
+  /** UI element: player_trk div @internal @hidden */
   elTrk: HTMLElement | null | undefined;
+  /** UI element: player_rel div @internal @hidden */
   elRel: HTMLElement | null | undefined;
+  /** UI element: player_shuffle a @internal @hidden */
   elShuffle: HTMLElement | null | undefined;
+  /** UI element: player_prev a @internal @hidden */
   elPrev: HTMLElement | null | undefined;
+  /** UI element: player_pause a @internal @hidden */
   elPause: HTMLElement | null | undefined;
+  /** UI element: player_next a @internal @hidden */
   elNext: HTMLElement | null | undefined;
+  /** UI element: player_vol div @internal @hidden */
   elVol: HTMLElement | null | undefined;
+  /** UI element: player_vgrp li @internal @hidden */
   elVolGrp: HTMLElement | null | undefined;
+  /** UI element: player_vgrp li first child @internal @hidden */
   elVolSel: HTMLElement | null | undefined;
+  /** UI element: foot div @internal @hidden */
   elFoot: HTMLElement | null | undefined;
+  /** UI element: spacer div @internal @hidden */
   elSpacer: HTMLElement | null | undefined;
 
+  /** Controlled player instance. @internal */
   player: BlnPlayer;
+  /** Spinner instance. @internal */
   spinner: Spinner;
+  /** User-Agent string. @internal */
   userAgent: string;
 
+  /**
+   * Create a new music player UI.
+   *
+   * @param opts configuration options
+   */
   constructor(opts: MusicControlOptions) {
     const o = opts || {};
 
@@ -133,36 +168,62 @@ export class MusicControl {
     this.userAgent = navigator.userAgent;
   }
 
+  /**
+   * Return `true` if running on an Android device or `false` otherwise.
+   *
+   * @internal @hidden
+   */
   get isAndroid() {
     return /(android)/i.test(this.userAgent);
   }
 
+  /**
+   * Return `true` if running on an iOS device or `false` otherwise.
+   *
+   * @internal @hidden
+   */
   get isIos() {
     return /iPad|iPhone|iPod/.test(this.userAgent);
   }
 
+  /**
+   * Return `true` if running on a mobile device or `false` otherwise.
+   *
+   * @internal @hidden
+   */
   get isMobile() {
     return this.isAndroid || this.isIos;
   }
 
+  /**
+   * Start the player engine.
+   */
   start() {
     this.player.load();
   }
 
   /**
-   * Locate playlist elements in the current page.
+   * Locate playlist elements in the current page. @internal @hidden
    */
   static get elPlaylist() {
     return document.getElementById('playlist');
   }
 
   /**
-   * Locate track elements in the current page.
+   * Locate track elements in the current page. @internal @hidden
    */
   static get elTracks() {
     return Array.from(document.getElementsByClassName('track'));
   }
 
+  /**
+   * Load references to DOM elements and prepare the UI.
+   *
+   * This method is used as a callback for the
+   * {@link BlnPlayerOptions.onLoad} hook.
+   *
+   * @internal @hidden
+   */
   load() {
     if (!this.player.track) return;
 
@@ -278,6 +339,11 @@ export class MusicControl {
     this.refresh();
   }
 
+  /**
+   * Activate a Playlist based on an identifier found in the HTML page.
+   *
+   * @internal @hidden
+   */
   activatePlaylist() {
     if (MusicControl.elPlaylist) {
       const idx = parseInt(MusicControl.elPlaylist.getAttribute('data-id') as string, 10);
@@ -285,6 +351,12 @@ export class MusicControl {
     }
   }
 
+  /**
+   * Load the volume control, including any previous state settings which
+   * may be stored in cookies.
+   *
+   * @internal @hidden
+   */
   volumeLoad() {
     // No volume control on mobile; users have volume rocker instead
     if (this.isMobile) {
@@ -321,6 +393,11 @@ export class MusicControl {
     }
   }
 
+  /**
+   * Set the volume, and store the setting in a cookie.
+   *
+   * @internal @hidden
+   */
   volumeSet(values: (string | number)[], handle: number) {
     const volCookie = '' + values[handle];
     Cookies.set('volume', volCookie);
@@ -329,6 +406,13 @@ export class MusicControl {
     this.volumeApply(vol);
   }
 
+  /**
+   * Apply a given volume setting.
+   *
+   * @param vol new volume level
+   *
+   * @internal @hidden
+   */
   volumeApply(vol: number) {
     this.player.volume(vol * 0.01);
 
@@ -341,6 +425,12 @@ export class MusicControl {
 
   /**
    * Refresh the UI to reflect the current player state.
+   *
+   * This method is used as a callback for the
+   * {@link BlnPlayerOptions.onPlay} and
+   * {@link BlnPlayerOptions.onUpdate} hooks.
+   *
+   * @internal @hidden
    */
   refresh() {
     const { track, release } = this.player;
@@ -439,11 +529,13 @@ export class MusicControl {
     }
   }
 
-  step() {
-    // Update position of seek bar
-    // https://howlerjs.com/assets/howler.js/examples/player/
-  }
-
+  /**
+   * Pause or resume playback.
+   *
+   * @param event DOM event
+   *
+   * @internal @hidden
+   */
   musicPause(event: Event) {
     this.player.pause();
 
@@ -451,6 +543,13 @@ export class MusicControl {
     return false;
   }
 
+  /**
+   * Shuffle the current playlist.
+   *
+   * @param event DOM event
+   *
+   * @internal @hidden
+   */
   musicShuffle(event: Event) {
     this.player.shuffle();
 
@@ -458,6 +557,13 @@ export class MusicControl {
     return false;
   }
 
+  /**
+   * Select the previous track on the current playlist.
+   *
+   * @param event DOM event
+   *
+   * @internal @hidden
+   */
   musicPrev(event: Event) {
     this.player.prev();
 
@@ -465,6 +571,13 @@ export class MusicControl {
     return false;
   }
 
+  /**
+   * Select the next track on the current playlist.
+   *
+   * @param event DOM event
+   *
+   * @internal @hidden
+   */
   musicNext(event: Event) {
     this.player.next();
 
