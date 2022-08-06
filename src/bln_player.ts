@@ -141,7 +141,7 @@ export class BlnPlayer {
   /**
    * Create a new player instance.
    *
-   * @param opts - configuration options
+   * @param opts configuration options
    */
   constructor(opts: BlnPlayerOptions) {
     const o = opts || {};
@@ -199,7 +199,7 @@ export class BlnPlayer {
    *
    * Will trigger the {@link BlnPlayerOptions.onLoad} callback once complete.
    *
-   * @param data - bundled data to load
+   * @param data bundled data to load
    *
    * @internal
    */
@@ -214,7 +214,7 @@ export class BlnPlayer {
   /**
    * Load release data.
    *
-   * @param releaseData - releases to load
+   * @param releaseData releases to load
    *
    * @internal @hidden
    */
@@ -238,7 +238,7 @@ export class BlnPlayer {
   /**
    * Load playlist data.
    *
-   * @param playlistData - playlists to load
+   * @param playlistData playlists to load
    *
    * @internal @hidden
    */
@@ -273,7 +273,7 @@ export class BlnPlayer {
   /**
    * Select a playlist.
    *
-   * @param idx - index of the playlist to be selected
+   * @param idx index of the playlist to be selected
    */
   selectPlaylist(idx: number) {
     this.playlist = this.playlists[idx].tracks;
@@ -318,7 +318,7 @@ export class BlnPlayer {
   /**
    * Set the volume level for audio playback.
    *
-   * @param vol - new volume level, may be a number from `0.0` to `1.0`
+   * @param vol new volume level, may be a number from `0.0` to `1.0`
    */
   volume(vol: number) {
     this.vol = vol;
@@ -358,7 +358,7 @@ export class BlnPlayer {
    * once immediately, and again when the audio engine has completed loading
    * the audio file.
    *
-   * @param track - track to be played
+   * @param track track to be played
    */
   play(track: Track) {
     if (this.howl) {
@@ -384,7 +384,7 @@ export class BlnPlayer {
   /**
    * Report play track event to the configured remote API endpoint.
    *
-   * @param track - track being played
+   * @param track track being played
    *
    * @internal
    */
