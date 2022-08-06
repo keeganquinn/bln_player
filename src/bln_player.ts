@@ -47,12 +47,19 @@ export interface BlnPlayerOptions {
  * A Track represents a single audio recording on a {@link Release}.
  */
 export interface Track {
+  /** Unique numeric identifier for the track. */
   id: number;
+  /** Unique numeric identifier of the associated release. */
   releaseId: number;
+  /** Artist name. */
   artist: string;
+  /** Track title. */
   title: string;
+  /** URL to the track audio in AAC format. */
   m4a: string;
+  /** URL to the track audio in MP3 format. */
   mp3: string;
+  /** URL to the track audio in Opus format. */
   webm: string;
 }
 
@@ -61,10 +68,15 @@ export interface Track {
  * {@link Track} recordings.
  */
 export interface Release {
+  /** Unique numeric identifier for the release. */
   id: number;
+  /** Release title. */
   title: string;
+  /** URL to the release information page. */
   url: string;
+  /** URL to the album cover image for the release. */
   image: string;
+  /** Tracks on the release. */
   tracks: Track[];
 }
 
@@ -72,11 +84,17 @@ export interface Release {
  * A Playlist represents a series of {@link Track} recordings.
  */
 export interface Playlist {
+  /** Unique numeric identifier for the playlist. */
   id: number;
+  /** Unique string identifier for the playlist. */
   code: string;
+  /** Playlist title. */
   title: string;
+  /** Active flag. */
   active: boolean;
+  /** Automatic shuffle flag. */
   autoShuffle: boolean;
+  /** Numeric ID numbers of tracks on the playlist. */
   tracks: number[];
 }
 
