@@ -1,4 +1,4 @@
-import BlnPlayer from './bln_player';
+import { PanelControl, PanelControlOptions } from './panel_control';
 
 import { Spinner } from 'spin.js';
 import Cookies from 'js-cookie';
@@ -69,26 +69,8 @@ const playerHtml = `
   </div>
 `;
 
-/**
- * Configuration options which are available when creating a new
- * {@link MusicControl} instance.
- */
-export interface MusicControlOptions {
-  /** API authorization key. */
-  apiKey?: string;
-  /** API authentication secret. */
-  apiSecret?: string;
-  /**
-   * Remote API endpoint for reporting play track events.
-   * Set to null to disable tracking.
-   */
-  eventsUrl?: string;
-  /** Remote API endpoint for data bundle source. */
-  sourceUrl?: string;
-}
-
 /** MusicControl provides a Bootstrap-based UI for {@link BlnPlayer}. */
-export class MusicControl {
+export class MusicControl extends PanelControl {
   /** UI element: bln_player div @internal @hidden */
   elPlayer: HTMLElement | null | undefined;
   /** UI element: player_art div @internal @hidden */
@@ -122,8 +104,6 @@ export class MusicControl {
   /** UI element: spacer div @internal @hidden */
   elSpacer: HTMLElement | null | undefined;
 
-  /** Controlled player instance. @internal */
-  player: BlnPlayer;
   /** Spinner instance. @internal */
   spinner: Spinner;
   /** User-Agent string. @internal */
@@ -134,20 +114,15 @@ export class MusicControl {
    *
    * @param opts configuration options
    */
-  constructor(opts: MusicControlOptions) {
+  constructor(opts: PanelControlOptions) {
     const o = opts || {};
+    super(opts);
 
-    this.player = new BlnPlayer({
-      apiKey: o.apiKey,
-      apiSecret: o.apiSecret,
-      autoLoop: true,
-      eventsUrl: o.eventsUrl,
-      html5: !this.isAndroid,
-      onLoad: this.load.bind(this),
-      onPlay: this.refresh.bind(this),
-      onUpdate: this.refresh.bind(this),
-      sourceUrl: o.sourceUrl,
-    });
+    this.player.opts.autoLoop = true;
+    this.player.opts.html5 = !this.isAndroid;
+    this.player.opts.onLoad = this.load.bind(this);
+    this.player.opts.onPlay = this.refresh.bind(this);
+    this.player.opts.onUpdate = this.refresh.bind(this);
 
     this.spinner = new Spinner({
       lines: 10,
@@ -193,13 +168,6 @@ export class MusicControl {
    */
   get isMobile() {
     return this.isAndroid || this.isIos;
-  }
-
-  /**
-   * Start the player engine.
-   */
-  start() {
-    this.player.load();
   }
 
   /**
@@ -265,28 +233,28 @@ export class MusicControl {
       this.elShuffle = document.getElementById('player_shuffle');
     }
     if (this.elShuffle) {
-      this.elShuffle.addEventListener('click', this.musicShuffle.bind(this));
+      this.elShuffle.addEventListener('click', this.shuffle.bind(this));
     }
 
     if (!this.elPrev) {
       this.elPrev = document.getElementById('player_prev');
     }
     if (this.elPrev) {
-      this.elPrev.addEventListener('click', this.musicPrev.bind(this));
+      this.elPrev.addEventListener('click', this.prev.bind(this));
     }
 
     if (!this.elPause) {
       this.elPause = document.getElementById('player_pause');
     }
     if (this.elPause) {
-      this.elPause.addEventListener('click', this.musicPause.bind(this));
+      this.elPause.addEventListener('click', this.pause.bind(this));
     }
 
     if (!this.elNext) {
       this.elNext = document.getElementById('player_next');
     }
     if (this.elNext) {
-      this.elNext.addEventListener('click', this.musicNext.bind(this));
+      this.elNext.addEventListener('click', this.next.bind(this));
     }
 
     if (!this.elVolGrp) this.elVolGrp = document.getElementById('player_vgrp');
@@ -394,19 +362,6 @@ export class MusicControl {
   }
 
   /**
-   * Set the volume, and store the setting in a cookie.
-   *
-   * @internal @hidden
-   */
-  volumeSet(values: (string | number)[], handle: number) {
-    const volCookie = '' + values[handle];
-    Cookies.set('volume', volCookie);
-
-    const vol = parseInt(volCookie, 10);
-    this.volumeApply(vol);
-  }
-
-  /**
    * Apply a given volume setting.
    *
    * @param vol new volume level
@@ -414,7 +369,7 @@ export class MusicControl {
    * @internal @hidden
    */
   volumeApply(vol: number) {
-    this.player.volume(vol * 0.01);
+    super.volumeApply(vol);
 
     // Update the icon based on the current status.
     const icon = (vol > 0) ? 'fa-volume-up' : 'fa-volume-mute';
@@ -527,62 +482,6 @@ export class MusicControl {
         this.elPause.innerHTML = '<span class="fa fa-fw fa-lg fa-play"></span>';
       }
     }
-  }
-
-  /**
-   * Pause or resume playback.
-   *
-   * @param event DOM event
-   *
-   * @internal @hidden
-   */
-  musicPause(event: Event) {
-    this.player.pause();
-
-    if (event) event.preventDefault();
-    return false;
-  }
-
-  /**
-   * Shuffle the current playlist.
-   *
-   * @param event DOM event
-   *
-   * @internal @hidden
-   */
-  musicShuffle(event: Event) {
-    this.player.shuffle();
-
-    if (event) event.preventDefault();
-    return false;
-  }
-
-  /**
-   * Select the previous track on the current playlist.
-   *
-   * @param event DOM event
-   *
-   * @internal @hidden
-   */
-  musicPrev(event: Event) {
-    this.player.prev();
-
-    if (event) event.preventDefault();
-    return false;
-  }
-
-  /**
-   * Select the next track on the current playlist.
-   *
-   * @param event DOM event
-   *
-   * @internal @hidden
-   */
-  musicNext(event: Event) {
-    this.player.next();
-
-    if (event) event.preventDefault();
-    return false;
   }
 }
 

@@ -224,7 +224,7 @@ export class PanelControl {
 
     if (volCookie) vol = parseInt(volCookie, 10);
     else vol = this.defaultVol;
-    this.player.volume(vol * 0.01);
+    this.volumeApply(vol);
 
     this.elVol = document.getElementById('bln_volume');
     if (this.elVol) {
@@ -253,6 +253,17 @@ export class PanelControl {
     Cookies.set('bln_volume', volCookie);
 
     const vol = parseInt(volCookie, 10);
+    this.volumeApply(vol);
+  }
+
+  /**
+   * Apply a given volume setting.
+   *
+   * @param vol new volume level
+   *
+   * @internal @hidden
+   */
+  volumeApply(vol: number) {
     this.player.volume(vol * 0.01);
   }
 
