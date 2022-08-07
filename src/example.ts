@@ -1,6 +1,9 @@
 import 'bootstrap';
 
-import { MusicControl, PanelControl } from './index';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+
+import { MusicControl, PanelControl, ReactControl } from './index';
 
 const html = `
   <div class="container p-3">
@@ -8,7 +11,10 @@ const html = `
       Start MusicControl</a>
     <a href="#" class="btn btn-secondary" id="startPanelControl">
       Start PanelControl</a>
+    <a href="#" class="btn btn-secondary" id="startReactControl">
+      Start ReactControl</a>
     <div id="panelTarget"></div>
+    <div id="reactTarget"></div>
   </div>
 `;
 
@@ -43,6 +49,17 @@ function startPanelControl(event: Event) {
   return false;
 }
 
+function startReactControl(event: Event) {
+  const root = ReactDOM.createRoot(
+    document.getElementById('reactTarget') as HTMLElement
+  );
+  const reactElement = React.createElement(ReactControl, {}, null);
+  root.render(reactElement);
+
+  if (event) event.preventDefault();
+  return false;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   document.body.innerHTML = html;
 
@@ -51,4 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const elStartPanelControl = document.getElementById('startPanelControl') as HTMLElement;
   elStartPanelControl.addEventListener('click', startPanelControl);
+
+  const elStartReactControl = document.getElementById('startReactControl') as HTMLElement;
+  elStartReactControl.addEventListener('click', startReactControl);
 });

@@ -115,7 +115,6 @@ export class MusicControl extends PanelControl {
    * @param opts configuration options
    */
   constructor(opts: PanelControlOptions) {
-    const o = opts || {};
     super(opts);
 
     this.player.opts.autoLoop = true;
