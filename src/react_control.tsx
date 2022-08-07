@@ -119,7 +119,7 @@ export class ReactControl extends React.Component {
             'overflow-x': 'hidden'
         }
 
-        return <div className="navbar navbar-dark navbar-expand bg-secondary fixed-bottom">
+        return <div className="navbar navbar-dark navbar-expand bg-secondary fixed-bottom" data-turbo-permanent>
             <div className="container">
                 <div className="d-none d-sm-flex">
                     <div>{this.artwork()}</div>
