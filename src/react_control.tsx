@@ -20,7 +20,8 @@ import { faVolumeUp } from '@fortawesome/free-solid-svg-icons/faVolumeUp';
 
 export interface ReactControlProps {
     id?: string,
-    defaultVol?: number
+    defaultVol?: number,
+    onCreate?: (instance: ReactControl) => void;
 }
 
 export interface ReactControlState {
@@ -76,6 +77,7 @@ export class ReactControl extends React.Component {
         this.playerId = props.id || 'aplayer123';
         this.defaultVol = props.defaultVol || 100;
 
+        this.ready = this.ready.bind(this);
         this.tick = this.tick.bind(this);
         this.playlistActivate = this.playlistActivate.bind(this);
         this.trackActivate = this.trackActivate.bind(this);
@@ -84,7 +86,7 @@ export class ReactControl extends React.Component {
         this.player = new BlnPlayer({
             autoLoop: true,
             html5: !ReactControl.isAndroid,
-            onLoad: this.tick,
+            onLoad: this.ready,
             onPlay: this.tick,
             onUpdate: this.tick
         });
@@ -93,11 +95,20 @@ export class ReactControl extends React.Component {
         this.prev = this.player.prev.bind(this.player);
         this.pause = this.player.pause.bind(this.player);
         this.next = this.player.next.bind(this.player);
+
+        if (props.onCreate) {
+            props.onCreate(this);
+        }
     }
 
     componentDidMount() {
         this.volumeLoad();
         this.player.load();
+    }
+
+    ready() {
+        this.tick();
+        this.pageAttach();
     }
 
     tick() {
@@ -110,8 +121,6 @@ export class ReactControl extends React.Component {
 
     render() {
         if (!this.state.active) return <div></div>;
-
-        this.pageAttach();
 
         const menuStyle = {
             left: '-1em',
