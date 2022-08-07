@@ -346,7 +346,7 @@ export class BlnPlayer {
    * Return the current selected {@link Release}.
    */
   get release() {
-    if (this.track === null) return;
+    if (!this.track) return;
     return this.releases[this.track.releaseId];
   }
 
