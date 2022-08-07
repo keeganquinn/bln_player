@@ -28,7 +28,9 @@
     "dist/music_control.js",
     "dist/music_control.d.ts",
     "dist/panel_control.js",
-    "dist/panel_control.d.ts"
+    "dist/panel_control.d.ts",
+    "dist/react_control.js",
+    "dist/react_control.d.ts"
   ],
   "keywords": [
     "basslin.es",
