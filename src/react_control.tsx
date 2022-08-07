@@ -111,6 +111,8 @@ export class ReactControl extends React.Component {
     render() {
         if (!this.state.active) return <div></div>;
 
+        this.pageAttach();
+
         const menuStyle = {
             left: '-1em',
             maxHeight: '75vh',
@@ -171,6 +173,50 @@ export class ReactControl extends React.Component {
                 </ul>
             </div>
         </div>;
+    }
+
+    static get pagePlaylist() {
+        return document.getElementById('playlist');
+    }
+
+    static get pageTracks() {
+        return Array.from(document.getElementsByClassName('track'));
+    }
+
+    pageAttach() {
+        if (!this.state.playing) this.pageActivatePlaylist();
+
+        ReactControl.pageTracks.forEach((item) => {
+            const elTrack = item as HTMLElement;
+            elTrack.className = 'track loaded';
+
+            const idx = parseInt(elTrack.getAttribute('data-id') as string, 10);
+            const track = this.player.tracks[idx];
+            if (!track) return;
+
+            elTrack.addEventListener('click', () => {
+              this.pageActivatePlaylist();
+              this.player.play(track);
+            });
+
+            Array.from(elTrack.getElementsByTagName('a')).forEach((link) => {
+              const elLink = link;
+              if (ReactControl.isMobile) {
+                elLink.style.display = 'none';
+              } else {
+                elLink.addEventListener('click', (event) => {
+                  event.stopPropagation();
+                });
+              }
+            });
+        });
+    }
+
+    pageActivatePlaylist() {
+        if (ReactControl.pagePlaylist) {
+            const idx = parseInt(ReactControl.pagePlaylist.getAttribute('data-id') as string, 10);
+            this.player.selectPlaylist(idx);
+        }
     }
 
     artwork() {
