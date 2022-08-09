@@ -359,3 +359,5 @@ export class MusicPlayer extends React.Component<MusicPlayerProps> {
         this.player.volume(vol * 0.01);
     }
 }
+
+export default MusicPlayer;
