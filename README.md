@@ -3,18 +3,20 @@ bln_player
 
 [![Build Status](https://ci.qtk.io/job/bln_player/badge/icon)](https://ci.qtk.io/job/bln_player/)
 
-bln_player is a TypeScript library which can be used to play music
-published by basslin.es records on web pages or other JavaScript applications
-which support HTML5 audio.
+bln_player is a TypeScript library package which can be used to play music from
+[basslin.es records](https://basslin.es/)
+on web pages or in other JavaScript applications which support HTML5 audio.
 
-It includes two controller UI implementations and a playlist manager.
+It includes a React component, a plain JavaScript UI implementation, and a
+playlist manager.
 
 
-MusicControl
-------------
+MusicPlayer
+-----------
 
-MusicControl provides the original controller UI used on the main basslin.es
-records web site. It requires Bootstrap 4+ and is presented as a footer navbar.
+MusicPlayer provides the original controller UI used on the
+[basslin.es records](https://basslin.es/)
+web site. It is implemented as a React component and requires Bootstrap.
 
 
 PanelControl

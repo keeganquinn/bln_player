@@ -15,27 +15,27 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons/faSpinner'
 import { faVolumeMute } from '@fortawesome/free-solid-svg-icons/faVolumeMute';
 import { faVolumeUp } from '@fortawesome/free-solid-svg-icons/faVolumeUp';
 
-export interface ReactControlProps {
+export interface MusicPlayerProps {
     id?: string,
     defaultVol?: number,
-    onCreate?: (instance: ReactControl) => void;
+    onCreate?: (instance: MusicPlayer) => void;
 }
 
-export interface ReactControlState {
+export interface MusicPlayerState {
     active?: boolean,
     loading?: boolean,
     playing?: boolean,
     volume?: number
 }
 
-export class ReactControl extends React.Component {
+export class MusicPlayer extends React.Component<MusicPlayerProps> {
     playerId: string;
     defaultVol: number;
 
     /** Controlled player instance. @internal */
     player: BlnPlayer;
 
-    state: ReactControlState = {};
+    state: MusicPlayerState = {};
     shuffle: BlnPlayer['shuffle'];
     prev: BlnPlayer['prev'];
     pause: BlnPlayer['pause'];
@@ -68,7 +68,7 @@ export class ReactControl extends React.Component {
         return this.isAndroid || this.isIos;
     }
 
-    constructor(props: ReactControlProps) {
+    constructor(props: MusicPlayerProps) {
         super(props);
 
         this.playerId = props.id || 'aplayer123';
@@ -82,7 +82,7 @@ export class ReactControl extends React.Component {
 
         this.player = new BlnPlayer({
             autoLoop: true,
-            html5: !ReactControl.isAndroid,
+            html5: !MusicPlayer.isAndroid,
             onLoad: this.ready,
             onPlay: this.tick,
             onUpdate: this.tick
@@ -187,7 +187,7 @@ export class ReactControl extends React.Component {
     pageAttach() {
         if (!this.state.playing) this.pageActivatePlaylist();
 
-        ReactControl.pageTracks.forEach((item) => {
+        MusicPlayer.pageTracks.forEach((item) => {
             const elTrack = item as HTMLElement;
             elTrack.className = 'track loaded';
 
@@ -202,7 +202,7 @@ export class ReactControl extends React.Component {
 
             Array.from(elTrack.getElementsByTagName('a')).forEach((link) => {
               const elLink = link;
-              if (ReactControl.isMobile) {
+              if (MusicPlayer.isMobile) {
                 elLink.style.display = 'none';
               } else {
                 elLink.addEventListener('click', (event) => {
@@ -214,8 +214,8 @@ export class ReactControl extends React.Component {
     }
 
     pageActivatePlaylist() {
-        if (ReactControl.pagePlaylist) {
-            const idx = parseInt(ReactControl.pagePlaylist.getAttribute('data-id') as string, 10);
+        if (MusicPlayer.pagePlaylist) {
+            const idx = parseInt(MusicPlayer.pagePlaylist.getAttribute('data-id') as string, 10);
             this.player.selectPlaylist(idx);
         }
     }
@@ -320,7 +320,7 @@ export class ReactControl extends React.Component {
     }
 
     volumeItem() {
-        if (ReactControl.isMobile || this.state.volume === undefined) return;
+        if (MusicPlayer.isMobile || this.state.volume === undefined) return;
 
         const icon = (this.state.volume > 0) ? faVolumeUp : faVolumeMute;
 

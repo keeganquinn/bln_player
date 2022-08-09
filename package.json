@@ -1,6 +1,6 @@
 {
   "name": "bln_player",
-  "version": "0.6.2",
+  "version": "0.7.0",
   "description": "Play music published by basslin.es records",
   "homepage": "https://github.com/keeganquinn/bln_player",
   "bugs": "https://github.com/keeganquinn/bln_player/issues",
@@ -25,12 +25,10 @@
     "dist/index.d.ts",
     "dist/bln_player.js",
     "dist/bln_player.d.ts",
-    "dist/music_control.js",
-    "dist/music_control.d.ts",
+    "dist/music_player.js",
+    "dist/music_player.d.ts",
     "dist/panel_control.js",
-    "dist/panel_control.d.ts",
-    "dist/react_control.js",
-    "dist/react_control.d.ts"
+    "dist/panel_control.d.ts"
   ],
   "keywords": [
     "basslin.es",
