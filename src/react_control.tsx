@@ -6,16 +6,13 @@ import Cookies from 'js-cookie';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBackward } from '@fortawesome/free-solid-svg-icons/faBackward';
 import { faForward } from '@fortawesome/free-solid-svg-icons/faForward';
-import { faGripHorizontal } from '@fortawesome/free-solid-svg-icons/faGripHorizontal';
 import { faList } from '@fortawesome/free-solid-svg-icons/faList';
 import { faMusic } from '@fortawesome/free-solid-svg-icons/faMusic';
 import { faPause } from '@fortawesome/free-solid-svg-icons/faPause';
 import { faPlay } from '@fortawesome/free-solid-svg-icons/faPlay';
 import { faRandom } from '@fortawesome/free-solid-svg-icons/faRandom';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons/faSpinner'
-import { faVolumeDown } from '@fortawesome/free-solid-svg-icons/faVolumeDown';
 import { faVolumeMute } from '@fortawesome/free-solid-svg-icons/faVolumeMute';
-import { faVolumeOff } from '@fortawesome/free-solid-svg-icons/faVolumeOff';
 import { faVolumeUp } from '@fortawesome/free-solid-svg-icons/faVolumeUp';
 
 export interface ReactControlProps {
@@ -173,12 +170,7 @@ export class ReactControl extends React.Component {
                             <FontAwesomeIcon icon={faForward} size="lg" fixedWidth />
                         </a>
                     </li>
-                    <li className="nav-item dropup">
-                        <a className="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <FontAwesomeIcon icon={faVolumeUp} size="lg" fixedWidth />
-                        </a>
-                        {this.volumeControl()}
-                    </li>
+                    {this.volumeItem()}
                 </ul>
             </div>
         </div>;
@@ -327,9 +319,20 @@ export class ReactControl extends React.Component {
         this.volumeApply(vol);
     }
 
-    volumeControl() {
-        if (ReactControl.isMobile) return <div></div>;
+    volumeItem() {
+        if (ReactControl.isMobile || this.state.volume === undefined) return;
 
+        const icon = (this.state.volume > 0) ? faVolumeUp : faVolumeMute;
+
+        return <li className="nav-item dropup">
+            <a className="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                <FontAwesomeIcon icon={icon} size="lg" fixedWidth />
+            </a>
+            {this.volumeControl()}
+        </li>;
+    }
+
+    volumeControl() {
         return <div className="dropdown-menu dropdown-menu-end bg-secondary p-1">
             <div>
                 <input type="range" value={this.state.volume} onChange={this.volumeSet} />
