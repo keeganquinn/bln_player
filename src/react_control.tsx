@@ -135,8 +135,8 @@ export class ReactControl extends React.Component {
                 <div className="d-none d-sm-flex">
                     <div>{this.artwork()}</div>
                     <div className="ps-3">
-                        <div>{this.track()}</div>
-                        <div>{this.release()}</div>
+                        {this.track()}
+                        {this.release()}
                     </div>
                 </div>
                 <ul className="navbar-nav">
@@ -248,11 +248,28 @@ export class ReactControl extends React.Component {
     }
 
     track() {
-        return this.player.track?.title || '-';
+        const style = {
+            fontSize: '0.8rem',
+            fontWeight: 'bold'
+        }
+        return <div style={style}>{this.player.track?.title || '-'}</div>;
     }
 
     release() {
-        return this.player.release?.title || '-';
+        const track = this.player.track;
+        const release = this.player.release;
+        if (!track || !release) return '-';
+
+        const style = {
+            fontSize: '0.8rem'
+        }
+        const aStyle = {
+            textDecoration: 'none',
+            color: 'black'
+        }
+        return <div style={style}><a href={release.url} style={aStyle}>
+            {track.artist} - {release.title}
+        </a></div>;
     }
 
     playlistSelect() {
