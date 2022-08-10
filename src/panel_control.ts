@@ -1,7 +1,6 @@
 import BlnPlayer from './bln_player';
 
 import Cookies from 'js-cookie';
-import noUiSlider from 'nouislider';
 
 import { library, dom } from '@fortawesome/fontawesome-svg-core';
 import { faBackward } from '@fortawesome/free-solid-svg-icons/faBackward';
@@ -28,7 +27,7 @@ const playerHtml = `
     <a id="bln_shuffle" href="#" class="btn btn-secondary">
       <span class="fa fa-fw fa-lg fa-random"></span></a>
     <div style="padding: 1em;">
-      <div id="bln_volume" class="noUi-target noUi-ltr noUi-horizontal"></div>
+      <input type="range" id="bln_volume" />
     </div>
   </div>
   <div id="bln_display">
@@ -90,8 +89,8 @@ export class PanelControl {
     elNext: HTMLElement | null | undefined;
     /** UI element: bln_shuffle a @internal @hidden */
     elShuffle: HTMLElement | null | undefined;
-    /** UI element: bln_volume div @internal @hidden */
-    elVol: HTMLElement | null | undefined;
+    /** UI element: bln_volume input @internal @hidden */
+    elVol: HTMLInputElement | null | undefined;
 
     /** Controlled player instance. @internal */
     player: BlnPlayer;
@@ -226,20 +225,13 @@ export class PanelControl {
         else vol = this.defaultVol;
         this.volumeApply(vol);
 
-        this.elVol = document.getElementById('bln_volume');
+        this.elVol = document.getElementById('bln_volume') as HTMLInputElement;
         if (this.elVol) {
-            this.elVol.style.width = '10em';
-            const slider = noUiSlider.create(this.elVol, {
-                start: [vol],
-                connect: [true, false],
-                orientation: 'horizontal',
-                direction: 'ltr',
-                range: {
-                    min: 0,
-                    max: 100,
-                },
+            this.elVol.value = '' + vol;
+            this.elVol.addEventListener('change', () => {
+                this.volumeSet(parseInt(this.elVol?.value || '100', 10));
             });
-            slider.on('set', this.volumeSet.bind(this));
+            this.elVol.style.width = '10em';
         }
     }
 
@@ -248,11 +240,10 @@ export class PanelControl {
      *
      * @internal @hidden
      */
-    volumeSet(values: (string | number)[], handle: number) {
-        const volCookie = '' + values[handle];
+    volumeSet(vol: number) {
+        const volCookie = '' + vol;
         Cookies.set('bln_volume', volCookie);
 
-        const vol = parseInt(volCookie, 10);
         this.volumeApply(vol);
     }
 
