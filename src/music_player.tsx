@@ -139,7 +139,7 @@ export class MusicPlayer extends React.Component<MusicPlayerProps> {
                 <ul className="navbar-nav">
                     <li className="nav-item dropup">
                         <a className="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <FontAwesomeIcon icon={faList} size="lg" fixedWidth />
+                            <FontAwesomeIcon icon={faList} size="lg" fixedWidth aria-label="Tracks and Playlists" aria-hidden="false" />
                         </a>
                         <div className="dropdown-menu p-0" style={menuStyle}>
                             Select Playlist: {this.playlistSelect()}
@@ -154,12 +154,12 @@ export class MusicPlayer extends React.Component<MusicPlayerProps> {
                     </li>
                     <li className="nav-item">
                         <a onClick={this.shuffle} className="nav-link">
-                            <FontAwesomeIcon icon={faRandom} size="lg" fixedWidth />
+                            <FontAwesomeIcon icon={faRandom} size="lg" fixedWidth aria-label="Shuffle" aria-hidden="false" />
                         </a>
                     </li>
                     <li className="nav-item">
                         <a onClick={this.prev} className="nav-link">
-                            <FontAwesomeIcon icon={faBackward} size="lg" fixedWidth />
+                            <FontAwesomeIcon icon={faBackward} size="lg" fixedWidth aria-label="Previous Track" aria-hidden="false" />
                         </a>
                     </li>
                     <li className="nav-item">
@@ -167,7 +167,7 @@ export class MusicPlayer extends React.Component<MusicPlayerProps> {
                     </li>
                     <li className="nav-item">
                         <a onClick={this.next} className="nav-link">
-                            <FontAwesomeIcon icon={faForward} size="lg" fixedWidth />
+                            <FontAwesomeIcon icon={faForward} size="lg" fixedWidth aria-label="Next Track" aria-hidden="false" />
                         </a>
                     </li>
                     {this.volumeItem()}
@@ -231,7 +231,7 @@ export class MusicPlayer extends React.Component<MusicPlayerProps> {
         let content;
         if (release) {
             content = <a href={release.url}>
-                <img src={release.image} alt="Cover" width="38" height="38"/>
+                <img src={release.image} alt="Cover Artwork" width="38" height="38" aria-hidden="true" />
             </a>;
         } else {
             content = <FontAwesomeIcon icon={faMusic} size="lg" fixedWidth />;
@@ -306,9 +306,9 @@ export class MusicPlayer extends React.Component<MusicPlayerProps> {
         if (this.state.loading) {
             return <FontAwesomeIcon icon={faSpinner} spin size="lg" fixedWidth />;
         } else if (this.state.playing) {
-            return <FontAwesomeIcon icon={faPause} size="lg" fixedWidth />;
+            return <FontAwesomeIcon icon={faPause} size="lg" fixedWidth aria-label="Pause" aria-hidden="false" />;
         } else {
-            return <FontAwesomeIcon icon={faPlay} size="lg" fixedWidth />;
+            return <FontAwesomeIcon icon={faPlay} size="lg" fixedWidth aria-label="Play" aria-hidden="false" />;
         }
     }
 
@@ -326,7 +326,7 @@ export class MusicPlayer extends React.Component<MusicPlayerProps> {
 
         return <li className="nav-item dropup">
             <a className="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                <FontAwesomeIcon icon={icon} size="lg" fixedWidth />
+                <FontAwesomeIcon icon={icon} size="lg" fixedWidth aria-label="Volume" aria-hidden="false" />
             </a>
             {this.volumeControl()}
         </li>;
