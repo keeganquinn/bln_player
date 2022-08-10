@@ -124,7 +124,7 @@ export class MusicPlayer extends React.Component<MusicPlayerProps> {
             maxHeight: '75vh',
             maxWidth: '100%',
             minWidth: '19em',
-            'overflow-x': 'hidden'
+            overflowX: 'hidden' as 'hidden'
         }
 
         return <div className="navbar navbar-dark navbar-expand bg-secondary fixed-bottom">
@@ -269,7 +269,7 @@ export class MusicPlayer extends React.Component<MusicPlayerProps> {
 
         this.player.playlists.forEach((playlist) => {
             if (!playlist.active) return;
-            playlists.push(<option value={playlist.id}>{playlist.title}</option>);
+            playlists.push(<option key={playlist.id} value={playlist.id}>{playlist.title}</option>);
         });
 
         return <select onChange={this.playlistActivate}>{playlists}</select>;
@@ -288,7 +288,7 @@ export class MusicPlayer extends React.Component<MusicPlayerProps> {
             const aTrack = this.player.tracks[trackId];
             if (!aTrack) return;
             const kls = aTrack.id === this.player.track?.id ? 'table-active' : '';
-            tracks.push(<tr data-id={aTrack.id} className={kls} onClick={this.trackActivate}>
+            tracks.push(<tr key={aTrack.id} data-id={aTrack.id} className={kls} onClick={this.trackActivate}>
                 <td>{aTrack.artist} - {aTrack.title}</td>
             </tr>);
         });
