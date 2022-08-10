@@ -3,7 +3,7 @@ import BlnPlayer from './bln_player';
 import React from 'react';
 import Cookies from 'js-cookie';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBackward } from '@fortawesome/free-solid-svg-icons/faBackward';
 import { faForward } from '@fortawesome/free-solid-svg-icons/faForward';
 import { faList } from '@fortawesome/free-solid-svg-icons/faList';
@@ -11,7 +11,7 @@ import { faMusic } from '@fortawesome/free-solid-svg-icons/faMusic';
 import { faPause } from '@fortawesome/free-solid-svg-icons/faPause';
 import { faPlay } from '@fortawesome/free-solid-svg-icons/faPlay';
 import { faRandom } from '@fortawesome/free-solid-svg-icons/faRandom';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons/faSpinner'
+import { faSpinner } from '@fortawesome/free-solid-svg-icons/faSpinner';
 import { faVolumeMute } from '@fortawesome/free-solid-svg-icons/faVolumeMute';
 import { faVolumeUp } from '@fortawesome/free-solid-svg-icons/faVolumeUp';
 
