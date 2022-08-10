@@ -10,6 +10,7 @@ import { faMusic } from '@fortawesome/free-solid-svg-icons/faMusic';
 import { faPause } from '@fortawesome/free-solid-svg-icons/faPause';
 import { faPlay } from '@fortawesome/free-solid-svg-icons/faPlay';
 import { faRandom } from '@fortawesome/free-solid-svg-icons/faRandom';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons/faSpinner';
 import { faVolumeDown } from '@fortawesome/free-solid-svg-icons/faVolumeDown';
 import { faVolumeMute } from '@fortawesome/free-solid-svg-icons/faVolumeMute';
 import { faVolumeOff } from '@fortawesome/free-solid-svg-icons/faVolumeOff';
@@ -151,6 +152,7 @@ export class PanelControl {
             faPause,
             faPlay,
             faRandom,
+            faSpinner,
             faVolumeDown,
             faVolumeMute,
             faVolumeOff,
@@ -285,7 +287,9 @@ export class PanelControl {
         }
 
         if (this.elPause) {
-            if (this.player.isPlaying || this.player.isLoading) {
+            if (this.player.isLoading) {
+                this.elPause.innerHTML = '<span class="fa fa-fw fa-lg fa-spinner fa-spin"></span>';
+            } else if (this.player.isPlaying) {
                 this.elPause.innerHTML = '<span class="fa fa-fw fa-lg fa-pause"></span>';
             } else {
                 this.elPause.innerHTML = '<span class="fa fa-fw fa-lg fa-play"></span>';
