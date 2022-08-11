@@ -15,12 +15,19 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons/faSpinner';
 import { faVolumeMute } from '@fortawesome/free-solid-svg-icons/faVolumeMute';
 import { faVolumeUp } from '@fortawesome/free-solid-svg-icons/faVolumeUp';
 
+/**
+ * Properties of {@link MusicPlayer}.
+ */
 export interface MusicPlayerProps {
-    id?: string,
     defaultVol?: number,
     onCreate?: (instance: MusicPlayer) => void;
 }
 
+/**
+ * State of {@link MusicPlayer}.
+ *
+ * @internal
+ */
 export interface MusicPlayerState {
     active?: boolean,
     loading?: boolean,
@@ -28,8 +35,11 @@ export interface MusicPlayerState {
     volume?: number
 }
 
+/**
+ * MusicPlayer is a React component which provides streaming music
+ * playback with a Bootstrap footer UI.
+ */
 export class MusicPlayer extends React.Component<MusicPlayerProps> {
-    playerId: string;
     defaultVol: number;
 
     /** Controlled player instance. @internal */
@@ -68,10 +78,14 @@ export class MusicPlayer extends React.Component<MusicPlayerProps> {
         return this.isAndroid || this.isIos;
     }
 
+    /**
+     * Create a new music player UI.
+     *
+     * @param props properties
+     */
     constructor(props: MusicPlayerProps) {
         super(props);
 
-        this.playerId = props.id || 'aplayer123';
         this.defaultVol = props.defaultVol || 100;
 
         this.ready = this.ready.bind(this);
@@ -98,16 +112,41 @@ export class MusicPlayer extends React.Component<MusicPlayerProps> {
         }
     }
 
+    /**
+     * Start the player engine when the component is mounted.
+     *
+     * This method is called by the React renderer.
+     *
+     * @internal
+     */
     componentDidMount() {
         this.volumeLoad();
         this.player.load();
     }
 
+    /**
+     * Refresh the UI and attach to the current pgae when the
+     * player engine is ready.
+     *
+     * This method is used as a callback for the
+     * {@link BlnPlayerOptions.onLoad} hook.
+     *
+     * @internal @hidden
+     */
     ready() {
         this.tick();
         this.pageAttach();
     }
 
+    /**
+     * Refresh the UI with the current player state.
+     *
+     * This method is used as a callback for the
+     * {@link BlnPlayerOptions.onPlay} and
+     * {@link BlnPlayerOptions.onUpdate} hooks.
+     *
+     * @internal @hidden
+     */
     tick() {
         this.setState({
             active: true,
@@ -116,9 +155,19 @@ export class MusicPlayer extends React.Component<MusicPlayerProps> {
         });
     }
 
+    /**
+     * Draw the UI.
+     *
+     * This method is called by the React renderer.
+     *
+     * @returns element tree to be rendered
+     *
+     * @internal
+     */
     render() {
         if (!this.state.active) return <div></div>;
 
+        /* eslint-disable  @typescript-eslint/prefer-as-const */
         const menuStyle = {
             left: '-1em',
             maxHeight: '75vh',
@@ -176,14 +225,26 @@ export class MusicPlayer extends React.Component<MusicPlayerProps> {
         </div>;
     }
 
+    /**
+     * Locate playlist elements in the current page. @internal @hidden
+     */
     static get pagePlaylist() {
         return document.getElementById('playlist');
     }
 
+    /**
+     * Locate track elements in the current page. @internal @hidden
+     */
     static get pageTracks() {
         return Array.from(document.getElementsByClassName('track'));
     }
 
+    /**
+     * Attach to the current page, adding controls for a Playlist
+     * a set of Tracks based on DOM elements.
+     *
+     * @internal @hidden
+     */
     pageAttach() {
         if (!this.state.playing) this.pageActivatePlaylist();
 
@@ -213,6 +274,12 @@ export class MusicPlayer extends React.Component<MusicPlayerProps> {
         });
     }
 
+    /**
+     * Activate the {@link Playlist} from the current page, loading
+     * it into the player.
+     *
+     * @internal @hidden
+     */
     pageActivatePlaylist() {
         if (MusicPlayer.pagePlaylist) {
             const idx = parseInt(MusicPlayer.pagePlaylist.getAttribute('data-id') as string, 10);
@@ -220,6 +287,13 @@ export class MusicPlayer extends React.Component<MusicPlayerProps> {
         }
     }
 
+    /**
+     * Draw the cover artwork box in the UI.
+     *
+     * @returns element tree to be rendered
+     *
+     * @internal @hidden
+     */
     artwork() {
         const release = this.player.release;
         const artStyle = {
@@ -239,6 +313,13 @@ export class MusicPlayer extends React.Component<MusicPlayerProps> {
         return <div style={artStyle}>{content}</div>;
     }
 
+    /**
+     * Draw the Track title in the UI.
+     *
+     * @returns element tree to be rendered
+     *
+     * @internal @hidden
+     */
     track() {
         const style = {
             fontSize: '0.8rem',
@@ -247,6 +328,13 @@ export class MusicPlayer extends React.Component<MusicPlayerProps> {
         return <div style={style}>{this.player.track?.title || '-'}</div>;
     }
 
+    /**
+     * Draw the Release title in the UI.
+     *
+     * @returns element tree to be rendered
+     *
+     * @internal @hidden
+     */
     release() {
         const track = this.player.track;
         const release = this.player.release;
@@ -264,6 +352,13 @@ export class MusicPlayer extends React.Component<MusicPlayerProps> {
         </a></div>;
     }
 
+    /**
+     * Draw the Playlist select list in the UI.
+     *
+     * @returns element tree to be rendered
+     *
+     * @internal @hidden
+     */
     playlistSelect() {
         const playlists: React.ReactElement[] = [];
 
@@ -275,12 +370,24 @@ export class MusicPlayer extends React.Component<MusicPlayerProps> {
         return <select onChange={this.playlistActivate}>{playlists}</select>;
     }
 
+    /**
+     * Activate a selected {@link Playlist}, loading it into the player.
+     *
+     * @internal @hidden
+     */
     playlistActivate(event: React.ChangeEvent<HTMLSelectElement>) {
         const playlistId = parseInt(event.target.value, 10);
         this.player.selectPlaylist(playlistId);
         if (this.player.track) this.player.play(this.player.track);
     }
 
+    /**
+     * Draw the Track table in the UI.
+     *
+     * @returns element tree to be rendered
+     *
+     * @internal @hidden
+     */
     trackTbody() {
         const tracks: React.ReactElement[] = [];
 
@@ -296,12 +403,25 @@ export class MusicPlayer extends React.Component<MusicPlayerProps> {
         return <tbody>{tracks}</tbody>;
     }
 
+    /**
+     * Activate a selected {@link Track}, loading it into the player.
+     *
+     * @internal @hidden
+     */
     trackActivate(event: React.MouseEvent<HTMLTableRowElement>) {
         const id = parseInt(event.currentTarget.getAttribute('data-id') as string, 10);
         const track = this.player.tracks[id];
         this.player.play(track);
     }
 
+    /**
+     * Draw the pause control, play control, or loading spinner in the UI,
+     * depending on the current player state.
+     *
+     * @returns element tree to be rendered
+     *
+     * @internal @hidden
+     */
     pauseSpan() {
         if (this.state.loading) {
             return <FontAwesomeIcon icon={faSpinner} spin size="lg" fixedWidth />;
@@ -312,6 +432,12 @@ export class MusicPlayer extends React.Component<MusicPlayerProps> {
         }
     }
 
+    /**
+     * Load the last stored volume setting, or the default volume setting
+     * if none has been stored.
+     *
+     * @internal @hidden
+     */
     volumeLoad() {
         let vol = this.defaultVol;
         const volCookie = Cookies.get('bln_volume');
@@ -319,6 +445,13 @@ export class MusicPlayer extends React.Component<MusicPlayerProps> {
         this.volumeApply(vol);
     }
 
+    /**
+     * Draw the volume control in the UI.
+     *
+     * @returns element tree to be rendered
+     *
+     * @internal @hidden
+     */
     volumeItem() {
         if (MusicPlayer.isMobile || this.state.volume === undefined) return;
 
@@ -328,18 +461,19 @@ export class MusicPlayer extends React.Component<MusicPlayerProps> {
             <a className="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                 <FontAwesomeIcon icon={icon} size="lg" fixedWidth aria-label="Volume" aria-hidden="false" />
             </a>
-            {this.volumeControl()}
+            <div className="dropdown-menu dropdown-menu-end bg-secondary p-1">
+                <input type="range" value={this.state.volume} onChange={this.volumeSet} />
+            </div>
         </li>;
     }
 
-    volumeControl() {
-        return <div className="dropdown-menu dropdown-menu-end bg-secondary p-1">
-            <div>
-                <input type="range" value={this.state.volume} onChange={this.volumeSet} />
-            </div>
-        </div>;
-    }
-
+    /**
+     * Set the volume to a specific level.
+     *
+     * @param event change event
+     *
+     * @internal @hidden
+     */
     volumeSet(event: React.ChangeEvent<HTMLInputElement>) {
         const volCookie = event.target.value;
         Cookies.set('bln_volume', volCookie);
