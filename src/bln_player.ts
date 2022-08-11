@@ -112,6 +112,11 @@ export interface DataBundle {
     playlists: Playlist[];
 }
 
+/** Default remote API endpoint for data bundle source. @internal */
+export const defaultSourceUrl = 'https://basslin.es/player.json';
+/** Default remote API endpoint for reporting play track events. @internal */
+export const defaultEventsUrl = 'https://basslin.es/ahoy/events';
+
 /** Play music published by basslin.es records. */
 export class BlnPlayer {
     /** Current loop selection setting. */
@@ -152,12 +157,12 @@ export class BlnPlayer {
         o.autoPlay = o.autoPlay || false;
         o.autoShuffle = o.autoShuffle || false;
         o.defaultPlaylist = o.defaultPlaylist || 'all';
-        o.eventsUrl = o.eventsUrl || 'https://basslin.es/ahoy/events';
+        o.eventsUrl = o.eventsUrl || defaultEventsUrl;
         o.html5 = o.html5 || false;
         o.onLoad = o.onLoad || function () { /* do nothing */ };
         o.onPlay = o.onPlay || function () { /* do nothing */ };
         o.onUpdate = o.onUpdate || function () { /* do nothing */ };
-        o.sourceUrl = o.sourceUrl || 'https://basslin.es/player.json';
+        o.sourceUrl = o.sourceUrl || defaultSourceUrl;
 
         this.loop = false;
         this.vol = 1.0;
