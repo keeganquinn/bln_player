@@ -6,19 +6,18 @@ import ReactDOM from 'react-dom/client';
 import { MusicPlayer, PanelControl } from './index';
 
 let root: ReactDOM.Root;
+let player: MusicPlayer;
+const setPlayer = (instance: MusicPlayer) => {
+    player = instance;
+};
+
+// Example of Turbo integration
+document.addEventListener('turbo:load', () => {
+    if (player) player.pageAttach();
+});
 
 function startMusicPlayer(event: React.MouseEvent<HTMLAnchorElement>) {
-    let player: MusicPlayer;
-    const setPlayer = (instance: MusicPlayer) => {
-        player = instance;
-    };
-
     root.render(<MusicPlayer onCreate={setPlayer} />);
-
-    // Example of Turbo integration
-    document.addEventListener('turbo:load', () => {
-        if (player) player.pageAttach();
-    });
 
     if (event) event.preventDefault();
     return false;
