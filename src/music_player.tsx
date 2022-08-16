@@ -101,7 +101,8 @@ export class MusicPlayer extends React.Component<MusicPlayerProps> {
             html5: !MusicPlayer.isAndroid,
             onLoad: this.ready,
             onPlay: this.tick,
-            onUpdate: this.tick
+            onUpdate: this.tick,
+            sourceUrl: props.sourceUrl
         });
 
         this.shuffle = this.player.shuffle.bind(this.player);
@@ -109,9 +110,7 @@ export class MusicPlayer extends React.Component<MusicPlayerProps> {
         this.pause = this.player.pause.bind(this.player);
         this.next = this.player.next.bind(this.player);
 
-        if (props.onCreate) {
-            props.onCreate(this);
-        }
+        if (props.onCreate) props.onCreate(this);
     }
 
     /**
