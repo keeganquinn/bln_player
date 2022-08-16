@@ -33,7 +33,6 @@ function startPanelControl(event: React.MouseEvent<HTMLAnchorElement>) {
         defaultPlaylist: 'electronic',
         defaultVol: 50,
         elTarget: elPanelTarget,
-        eventsUrl: 'https://basslines-staging.quinn.tk/ahoy/events',
     });
     panelControl.start();
     panelControl.load();

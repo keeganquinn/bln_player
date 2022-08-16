@@ -39,9 +39,7 @@ const playlists = [{
 describe('BlnPlayer', () => {
     let blnPlayer: BlnPlayer;
     beforeEach(() => {
-        blnPlayer = new BlnPlayer({
-            eventsUrl: 'https://basslines-staging.quinn.tk/ahoy/events',
-        });
+        blnPlayer = new BlnPlayer({});
     });
 
     it('is not ready until loaded', () => {

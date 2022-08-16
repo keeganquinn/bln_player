@@ -26,11 +26,6 @@ export interface BlnPlayerOptions {
     autoShuffle?: boolean;
     /** Default playlist to select when loaded. */
     defaultPlaylist?: string;
-    /**
-     * Remote API endpoint for reporting play track events.
-     * Set to null to disable tracking.
-     */
-    eventsUrl?: string;
     /** Use streaming HTML5 audio. */
     html5?: boolean;
     /** Load callback. */
@@ -106,16 +101,12 @@ export interface Playlist {
  * must return data in this format.
  */
 export interface DataBundle {
-    visitToken: string;
-    visitorToken: string;
     releases: Release[];
     playlists: Playlist[];
 }
 
 /** Default remote API endpoint for data bundle source. @internal */
 export const defaultSourceUrl = 'https://basslin.es/player.json';
-/** Default remote API endpoint for reporting play track events. @internal */
-export const defaultEventsUrl = 'https://basslin.es/ahoy/events';
 
 /** Play music published by basslin.es records. */
 export class BlnPlayer {
@@ -138,10 +129,6 @@ export class BlnPlayer {
     track: Track | null;
     /** Loaded track data. @internal */
     tracks: Track[];
-    /** Current visit token used for tracking. @internal */
-    visitToken: string | null;
-    /** Current visitor token used for tracking. @internal */
-    visitorToken: string | null;
 
     /**
      * Create a new player instance.
@@ -157,7 +144,6 @@ export class BlnPlayer {
         o.autoPlay = o.autoPlay || false;
         o.autoShuffle = o.autoShuffle || false;
         o.defaultPlaylist = o.defaultPlaylist || 'all';
-        o.eventsUrl = o.eventsUrl || defaultEventsUrl;
         o.html5 = o.html5 || false;
         o.onLoad = o.onLoad || function () { /* do nothing */ };
         o.onPlay = o.onPlay || function () { /* do nothing */ };
@@ -174,8 +160,6 @@ export class BlnPlayer {
         this.releases = [];
         this.track = null;
         this.tracks = [];
-        this.visitToken = null;
-        this.visitorToken = null;
     }
 
     /**
@@ -209,8 +193,6 @@ export class BlnPlayer {
      * @internal
      */
     loadData(data: DataBundle) {
-        this.visitToken = data.visitToken;
-        this.visitorToken = data.visitorToken;
         this.loadReleases(data.releases);
         this.loadPlaylists(data.playlists);
         this.ready();
@@ -371,7 +353,6 @@ export class BlnPlayer {
         }
 
         this.track = track;
-        this.sendEvent(track);
         this.howl = new Howl({
             src: [track.webm, track.m4a, track.mp3],
             volume: this.vol,
@@ -384,43 +365,6 @@ export class BlnPlayer {
 
         if (this.opts.onUpdate) this.opts.onUpdate();
         this.howl.play();
-    }
-
-    /**
-     * Report play track event to the configured remote API endpoint.
-     *
-     * @param track track being played
-     *
-     * @internal @hidden
-     */
-    sendEvent(track: Track) {
-        if (!this.opts.eventsUrl) return;
-
-        const data = {
-            events: [{
-                name: '$play',
-                properties: {
-                    apiKey: this.opts.apiKey,
-                    apiSecret: this.opts.apiSecret,
-                    origin: window.location.href,
-                    track: {
-                        id: track.id,
-                        title: track.title,
-                        artist: track.artist,
-                    },
-                    vol: this.vol,
-                },
-                time: (new Date()).getTime() / 1000.0,
-                js: true,
-            }],
-            visit_token: this.visitToken,
-            visitor_token: this.visitorToken,
-        };
-
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', this.opts.eventsUrl, true);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.send(JSON.stringify(data));
     }
 
     /**

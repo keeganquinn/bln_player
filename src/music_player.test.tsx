@@ -6,11 +6,9 @@ import {render, fireEvent, waitFor, screen} from '@testing-library/react';
 import '@testing-library/jest-dom';
 
 import MusicPlayer from './music_player';
-import {DataBundle, defaultEventsUrl, defaultSourceUrl} from './bln_player';
+import {DataBundle, defaultSourceUrl} from './bln_player';
 
 const dataBundle: DataBundle = {
-    visitToken: 'abc',
-    visitorToken: 'abc',
     releases: [],
     playlists: []
 };
@@ -22,9 +20,6 @@ const eventResponse = {
 const server = setupServer(
     rest.get(defaultSourceUrl, (req, res, ctx) => {
         return res(ctx.json(dataBundle));
-    }),
-    rest.get(defaultEventsUrl, (req, res, ctx) => {
-        return res(ctx.json(eventResponse));
     }),
 );
 

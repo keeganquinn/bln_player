@@ -57,11 +57,6 @@ export interface PanelControlOptions {
     defaultPlaylist?: string;
     /** Default volume setting. */
     defaultVol?: number;
-    /**
-     * Remote API endpoint for reporting play track events.
-     * Set to null to disable tracking.
-     */
-    eventsUrl?: string;
     /** Use streaming HTML5 audio. */
     html5?: boolean;
     /** Target HTML element to render the UI. */
@@ -116,7 +111,6 @@ export class PanelControl {
             autoPlay: o.autoPlay,
             autoShuffle: o.autoShuffle,
             defaultPlaylist: o.defaultPlaylist,
-            eventsUrl: o.eventsUrl,
             html5: o.html5,
             onLoad: this.load.bind(this),
             onPlay: this.refresh.bind(this),

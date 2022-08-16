@@ -19,8 +19,10 @@ import { faVolumeUp } from '@fortawesome/free-solid-svg-icons/faVolumeUp';
  * Properties of {@link MusicPlayer}.
  */
 export interface MusicPlayerProps {
-    defaultVol?: number,
+    defaultVol?: number;
     onCreate?: (instance: MusicPlayer) => void;
+    /** Remote API endpoint for data bundle source. */
+    sourceUrl?: string;
 }
 
 /**
@@ -29,10 +31,10 @@ export interface MusicPlayerProps {
  * @internal
  */
 export interface MusicPlayerState {
-    active?: boolean,
-    loading?: boolean,
-    playing?: boolean,
-    volume?: number
+    active?: boolean;
+    loading?: boolean;
+    playing?: boolean;
+    volume?: number;
 }
 
 /**
