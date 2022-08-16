@@ -10,8 +10,11 @@ on web pages or in other JavaScript applications which support HTML5 audio.
 It includes a React component, a plain JavaScript UI implementation, and a
 playlist manager.
 
-https://github.com/keeganquinn/bln_player
-https://www.npmjs.com/package/bln_player
+Available as `bln_player` on
+[NPM](https://www.npmjs.com/package/bln_player).
+
+Issue reports and pull requests are welcome via
+[GitHub](https://github.com/keeganquinn/bln_player).
 
 
 MusicPlayer
