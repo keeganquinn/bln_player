@@ -1,4 +1,5 @@
-import 'bootstrap';
+import 'bootstrap/js/dist/button';
+import 'bootstrap/js/dist/dropdown';
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
