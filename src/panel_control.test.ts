@@ -1,3 +1,5 @@
+import {beforeEach, describe, it, expect} from 'vitest';
+
 import PanelControl from './panel_control';
 
 window.HTMLMediaElement.prototype.load = () => { /* do nothing */ };

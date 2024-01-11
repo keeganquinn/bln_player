@@ -1,3 +1,5 @@
+import {beforeEach, describe, it, expect} from 'vitest';
+
 import BlnPlayer from './bln_player';
 
 window.HTMLMediaElement.prototype.load = () => { /* do nothing */ };
