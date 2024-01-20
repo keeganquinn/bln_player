@@ -1,9 +1,6 @@
 bln_player
 ==========
 
-[![Build Status](https://ci.qtk.io/job/bln_player/badge/icon)](https://ci.qtk.io/job/bln_player/)
-[![npm version](https://badge.fury.io/js/bln_player.svg)](https://badge.fury.io/js/bln_player)
-
 bln_player is a TypeScript library package which can be used to play music from
 [basslin.es records](https://basslin.es/)
 on web pages or in other JavaScript applications which support HTML5 audio.
