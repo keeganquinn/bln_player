@@ -11,7 +11,7 @@ npm -s run clean
 npm -s run prepare
 npm -s run example
 
-npm -s test || true
+npm -s run coverage || true
 npm -s run doc || true
 
 npm -s run lint -- --format node_modules/eslint-formatter-checkstyle-* \

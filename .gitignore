@@ -10,7 +10,7 @@
 
 # Build artifacts
 /checkstyle-*.xml
-/coverage-js/
+/coverage/
 /dist/
 /docs/
 /junit.xml

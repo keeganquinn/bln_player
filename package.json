@@ -13,12 +13,13 @@
     "build:css": "sass ./src/example.scss ./dist/example.css --no-source-map --load-path=node_modules",
     "build:html": "webpack --config webpack.config.js",
     "clean": "rimraf *.xml coverage-js dist docs",
+    "coverage": "vitest --run --coverage src",
     "example": "npm run build && npm run build:css && npm run build:html",
     "lint": "eslint src",
     "doc": "typedoc src/index.ts",
     "prepare": "npm run build",
     "server": "http-server dist",
-    "test": "vitest --run"
+    "test": "vitest --run src"
   },
   "files": [
     "dist/index.js",
@@ -63,6 +64,7 @@
     "@types/react-dom": "^18.0.6",
     "@typescript-eslint/eslint-plugin": "^6.18.1",
     "@typescript-eslint/parser": "^6.18.1",
+    "@vitest/coverage-v8": "^1.2.1",
     "bootstrap": "^5.0.1",
     "eslint": "^8.21.0",
     "eslint-formatter-checkstyle-relative-paths": "^1.0.1",
