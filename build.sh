@@ -4,7 +4,7 @@
 
 set -ex
 
-npm install --frozen-lockfile
+npm install
 
 
 npm -s run clean
